@@ -1,0 +1,27 @@
+{
+  "development": {
+    "main": "http://127.0.0.1:5173/",
+    "preload": "preload.js"
+  },
+  "main": "index.html",
+  "preload": "preload.js",
+  "logo": "logo.png",
+  "features": [
+    {
+      "code": "斗图",
+      "explain": "来斗图吧",
+      "cmds": [
+        "emoji",
+        "斗图",
+        "表情",
+        "表情包",
+        {
+          "type": "over",
+          "label": "斗图啦",
+          "minLength": 1,
+          "maxLength": 20
+        }
+      ]
+    }
+  ]
+}
