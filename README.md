@@ -1,7 +1,7 @@
-# Vue 3 + Vite
+# 基于 Vue 3 + Vite 开发的utools表情包搜索插件
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+```text
+API接口来源于搜狗，如果大家有推荐的表情包接口，欢迎推荐
+其他没啥了，就是一些函数踩坑和学习的过程，在此感谢 斗图 插件的作者，
+参考和学习了插件的一些用法:)
+```
