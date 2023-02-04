@@ -1,29 +1,33 @@
 const fs = require('fs')
 const http = require('http');
-const https = require('https');
 
-window.copyImage = (url) => {
+/**
+ * 复制图片到剪贴板
+ * @param filePath
+ */
+window.copyImage = (filePath) => {
+    let localFilePath = filePath.replace("file://", "")
+    let copyResult = utools.copyFile(localFilePath)
+    copyResult && utools.hideMainWindow()
+}
+
+/**
+ * 下载图片到本地临时目录
+ * @param resolve
+ * @param url
+ * @param callback
+ */
+window.downloadImage = (resolve, url, callback) => {
+    console.log(url)
     const nameArr = url.split("/")
-    let fileName = nameArr[nameArr.length - 1]
+    let fileName = `/${nameArr[nameArr.length - 1]}`
 
     const filePath = `${utools.getPath("temp")}${fileName}`
-    let client = http
-    if (url.startsWith("https")) {
-        client = https
-    }
-    client.get(url, res => {
+
+    http.get(url, res => {
         res.pipe(fs.createWriteStream(filePath))
-            .on('close', () => {
-                let copyResult = false
-                if (filePath.endsWith(".jpg")) {
-                    copyResult = utools.copyImage(filePath)
-                } else {
-                    copyResult = utools.copyFile(filePath)
-                }
-                copyResult && utools.hideMainWindow()
-            })
+            .on('close', () => callback(filePath) && resolve())
     });
-    console.log(filePath)
 }
 
 

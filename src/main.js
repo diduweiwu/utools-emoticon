@@ -7,6 +7,8 @@ import {
     // component
     NSpin,
     NGrid,
+    NButton,
+    NSpace,
     NGi,
 } from 'naive-ui'
 
@@ -14,6 +16,8 @@ const naive = create({
     components: [
         NSpin,
         NGrid,
+        NButton,
+        NSpace,
         NGi,
     ]
 })
