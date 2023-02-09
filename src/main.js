@@ -1,24 +1,16 @@
 import {createApp} from 'vue'
 import './style.css'
 import App from './App.vue'
-import {
-    // create naive ui
-    create,
-    // component
-    NSpin,
-    NGrid,
-    NButton,
-    NSpace,
-    NGi,
-} from 'naive-ui'
+import {create, NButton, NDropdown, NGi, NGrid, NIcon, NModal, NNotificationProvider, NSpace, NSpin,} from 'naive-ui'
 
 const naive = create({
     components: [
-        NSpin,
+        NSpin, NIcon, NDropdown,
         NGrid,
         NButton,
-        NSpace,
+        NSpace, NModal,
         NGi,
+        NNotificationProvider,
     ]
 })
 createApp(App).use(naive).mount('#app')

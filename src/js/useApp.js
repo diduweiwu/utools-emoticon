@@ -1,7 +1,34 @@
 import {ref} from "vue";
-import axios from "axios";
 import cheerio from "cheerio";
+import UseConfig from "./useConfig.js";
+import {downloadImages} from "./useFiles.js";
+import axios from "axios";
 
+/**
+ * pk 斗图网表情包搜索
+ * @param loading
+ * @param pagination
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ */
+const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value) {
+        return
+    }
+    loading.value = true
+    preHandle && preHandle()
+    const params = {type: 'photo', page: pagination.value.pageNum, keyword: keyWord.value, more: 1};
+    const config = {method: 'get', url: `https://www.pkdoutu.com/search`, params};
+    axios(config)
+        .then(function (response) {
+            const $ = cheerio.load(response.data)
+
+            const imgTags = $('.random_picture img.image_dtb')
+            const imgLinks = imgTags.map((_, img) => img.attribs['data-original'])
+            downloadImages(imgLinks).then(files => callback(files)).then(() => loading.value = false)
+        })
+}
 /**
  * 爱斗图表情包搜索 - 发送请求搜索表情包列表
  * @param loading
@@ -10,6 +37,9 @@ import cheerio from "cheerio";
  * @param callback
  */
 const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value) {
+        return
+    }
     loading.value = true
     preHandle && preHandle()
 
@@ -20,15 +50,8 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
     axios(config)
         .then(function (response) {
             const $ = cheerio.load(response.data)
-
-            const imgTags = $('.picture-list img')
-            const imgLinks = imgTags.map((_, img) => img.attribs['src'])
-            const tempFiles = []
-            // 把图片都下载到本地临时目录，跳过跨域限制
-            const promiseArr = imgLinks.map((_, img) => new Promise(resolve => window.downloadImage(resolve, img, file => tempFiles.push(`file://${file}`))))
-
-            Promise.all(promiseArr).then(() => callback(tempFiles))
-                .then(() => loading.value = false)
+            const imgLinks = $('.picture-list img').map((_, img) => img.attribs['src'])
+            downloadImages(imgLinks).then(files => callback(files)).then(() => loading.value = false)
         })
 }
 
@@ -48,7 +71,6 @@ function init(keyWord, reload) {
     addEventListener('keydown', (event) => {
         // 回车的时候，进行搜索
         if (event.code === 'Enter') {
-            console.log(keyWord.value)
             reload()
         }
     });
@@ -60,14 +82,23 @@ export default function () {
     const emoticons = ref([])
     const keyWord = ref("")
     const loading = ref(false)
+
     const pagination = ref({
         pageNum: 1,
         pageSize: 50
     })
+    const {fetchConfig} = UseConfig()
 
     // 数据加载
     const loadData = (pagination) => {
-        fetchAiDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value = items)
+        const {imageSource} = fetchConfig()
+
+        if ("爱斗图" === imageSource) {
+            return fetchAiDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value = items)
+        }
+        if ("PK斗图" === imageSource) {
+            return fetchPkDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value = items)
+        }
     }
 
     // 重置为加载第一页
@@ -98,5 +129,6 @@ export default function () {
         previousPage,
         nextPage,
         reload,
+        downloadImages,
     }
 }
