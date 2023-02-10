@@ -26,7 +26,8 @@ const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
 
             const imgTags = $('.random_picture img.image_dtb')
             const imgLinks = imgTags.map((_, img) => img.attribs['data-original'])
-            downloadImages(imgLinks).then(files => callback(files)).then(() => loading.value = false)
+            downloadImages(imgLinks, {}, callback)
+            loading.value = false
         })
 }
 /**
@@ -51,7 +52,8 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
         .then(function (response) {
             const $ = cheerio.load(response.data)
             const imgLinks = $('.picture-list img').map((_, img) => img.attribs['src'])
-            downloadImages(imgLinks).then(files => callback(files)).then(() => loading.value = false)
+            downloadImages(imgLinks, {}, callback)
+            loading.value = false
         })
 }
 
@@ -62,7 +64,7 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param preHandle
  * @param callback
  */
-const fetchDouTubaEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
     if (loading.value || !keyWord.value) {
         return
     }
@@ -77,9 +79,38 @@ const fetchDouTubaEmoticons = (loading, pagination, keyWord, preHandle, callback
         .then(function (response) {
             const {rows} = response.data.data
             const imgLinks = rows.map(row => row['path'].replace('https', 'http'))
-            downloadImages(imgLinks, {
-                headers: {'Referer': 'http://www.doutub.com'}
-            }).then(files => callback(files)).then(() => loading.value = false)
+
+            downloadImages(imgLinks, {headers: {'Referer': 'http://www.doutub.com'}}, callback)
+            loading.value = false
+        })
+}
+
+/**
+ * 斗图王表情包搜索 - 发送请求搜索表情包列表
+ * @param loading
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ */
+const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value) {
+        return
+    }
+    loading.value = true
+    preHandle && preHandle()
+
+    const config = {
+        method: 'get',
+        url: `https://www.doutuwang.com/page/${pagination.value.pageNum}?s=${keyWord.value}`
+    };
+
+    axios(config)
+        .then(function (response) {
+            const $ = cheerio.load(response.data)
+            const imgLinks = $('.post img').map((_, img) => img.attribs['src'])
+
+            downloadImages(imgLinks, {}, callback)
+            loading.value = false
         })
 }
 
@@ -122,13 +153,17 @@ export default function () {
         const {imageSource} = fetchConfig()
 
         if ("爱斗图" === imageSource) {
-            return fetchAiDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value = items)
+            return fetchAiDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value.push(...items))
         }
         if ("PK斗图" === imageSource) {
-            return fetchPkDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value = items)
+            return fetchPkDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value.push(...items))
         }
         if ('斗图吧' === imageSource) {
-            return fetchDouTubaEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value = items)
+            return fetchDouTuBaEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value.push(...items))
+        }
+
+        if ('斗图王' === imageSource) {
+            return fetchDouTuWangEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value.push(...items))
         }
     }
 
@@ -160,6 +195,6 @@ export default function () {
         previousPage,
         nextPage,
         reload,
-        downloadImages,
+        downloadImages, downloadImage,
     }
 }

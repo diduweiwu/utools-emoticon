@@ -1,16 +1,13 @@
-const downloadImages = async (imgLinks, config = {}) => {
+const downloadImages = async (imgLinks, config = {}, callback) => {
     // 把图片都下载到本地临时目录，跳过跨域限制
-    const files = []
-
     for (let i = 0; i < imgLinks.length; i++) {
         let a = await window.downloadImage(imgLinks[i], config)
         if (!!a) {
-            files.push(a)
+            callback && callback([a])
         }
     }
-
-    return files
 }
+
 
 export {
     downloadImages,

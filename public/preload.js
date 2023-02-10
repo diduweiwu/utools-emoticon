@@ -1,5 +1,6 @@
 const fs = require('fs')
 const http = require('http');
+const https = require('https');
 const crypto = require('crypto');
 
 /**
@@ -29,18 +30,12 @@ const getFileSize = (filePath) => {
     });
 }
 
-// const fetchFile = (url, filePath) => {
-//     return new Promise(resolve => http.get(url, res => {
-//         res.pipe(fs.createWriteStream(filePath))
-//             .on('close', () => resolve(filePath))
-//     }))
-// }
-
 const fetchFile = (url, filePath, config) => {
     const [host, path] = url.split('.com')
 
-    return new Promise(resolve => http.get({
-        host: `${host.replace('http://', '')}.com`,
+    const request = url.startsWith('https') ? https : http
+    return new Promise(resolve => request.get({
+        host: `${host.replace('https://', '').replace('http://', '')}.com`,
         path: path,
         method: 'get',
         headers: config['headers'] || {}
@@ -52,25 +47,32 @@ const fetchFile = (url, filePath, config) => {
 
 /**
  * 下载图片到本地临时目录
- * @param resolve
  * @param url
- * @param callback
+ * @param config
  */
-window.downloadImage = async (url, config) => {
+window.downloadImage = async (url, config = {}) => {
     // 文件名采用随机方式，避免文件冲突
-    let fileName = `/${crypto.createHash('md5').update(url).digest('hex')}`
+    let fileName = `${crypto.createHash('md5').update(url).digest('hex')}`
 
-    const filePath = `${utools.getPath("temp")}${fileName}`
+    // 默认组装Referer header头
+    const [host] = url.split('com')
+    config['headers'] = {'Referer': `${host}.com`}
+
+    // 组装文件路径
+    const filePath = `${utools.getPath("temp")}/${fileName}`
     if (!fs.existsSync(filePath)) {
         await fetchFile(url, filePath, config)
     }
 
-    const fileSize = await getFileSize(filePath)
+    // 二次检查，文件存在且不符合要求则删除掉
+    if (fs.existsSync(filePath)) {
+        const fileSize = await getFileSize(filePath)
 
-    // 不存在的文件或者小于1k的图表，删除缓存并跳过
-    if (fileSize < 1024) {
-        fs.unlinkSync(filePath)
-        return null
+        // 不存在的文件或者小于1k的图表，删除缓存并跳过
+        if (fileSize < 1024) {
+            fs.unlinkSync(filePath)
+            return null
+        }
     }
 
     return {

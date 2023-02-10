@@ -38,10 +38,10 @@ export default {
         label: '斗图吧',
         key: '斗图吧'
       },
-      // {
-      //   label: 'PK斗图',
-      //   key: 'PK斗图'
-      // },
+      {
+        label: '斗图王',
+        key: '斗图王'
+      },
     ]
     const notification = useNotification()
 
