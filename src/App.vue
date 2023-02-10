@@ -3,46 +3,68 @@ import useApp from "./js/useApp.js";
 import ImageSourceSwitcher from "./components/ImageSourceSwitcher.vue";
 import ImageList from "./components/ImageList.vue";
 import ImageStarList from "./components/ImageStarList.vue";
+import {darkTheme, useOsTheme} from "naive-ui";
+import {computed} from "vue";
+
 
 export default {
   components: {ImageStarList, ImageList, ImageSourceSwitcher},
   setup() {
+
+    const osThemeRef = useOsTheme();
+
     return {
       ...useApp(),
       ImageList,
+      theme: computed(() => osThemeRef.value === "dark" ? darkTheme : null),
     }
   }
 }
 </script>
 
 <template>
-  <n-notification-provider>
-    <n-spin :show="loading">
-      <ImageList :loading="loading" :emoticons="emoticons"/>
+  <n-config-provider :theme="theme">
+    <n-notification-provider>
+      <n-layout position="absolute">
+        <n-layout-header style="height: 50px;" bordered>
+          <n-space justify="space-between" align="center" style="height: 50px;padding:0 10px">
+            <n-space>
+              <n-button :disabled="pagination.pageNum==1" type="default" size="large" @click="previousPage">上一页
+              </n-button>
+              <n-button :disabled="!(emoticons&&emoticons.length)" type="default" size="large" @click="nextPage">下一页
+              </n-button>
+            </n-space>
+            <n-space>
+              <ImageSourceSwitcher :reload="reload"/>
+              <ImageStarList ref="imageStarList"/>
+            </n-space>
+          </n-space>
+        </n-layout-header>
+        <n-layout has-sider position="absolute" style="top: 60px">
+          <n-layout content-style="padding: 0 10px">
+            <n-spin :show="loading" style="min-height: 100px" description="努力加载中~">
+              <ImageList :loading="loading" :emoticons="emoticons"/>
+            </n-spin>
+          </n-layout>
+        </n-layout>
+      </n-layout>
+    </n-notification-provider>
+  </n-config-provider>
 
-      <n-space align="center" vertical style="position:fixed;bottom: 70px;left: 0;z-index: 1024">
-<!--        <ImageSourceSwitcher :reload="reload"/>-->
-        <ImageStarList ref="imageStarList"/>
-      </n-space>
-      <n-space justify="center" class="footer">
-        <n-button :disabled="pagination.pageNum==1" type="primary" size="small" @click="previousPage">上一页
-        </n-button>
-        <n-button :disabled="!(emoticons&&emoticons.length)" type="primary" size="small" @click="nextPage">下一页
-        </n-button>
-
-      </n-space>
-    </n-spin>
-  </n-notification-provider>
 </template>
 
 <style scoped>
 
-.footer {
-  position: fixed;
-  bottom: 0;
-  padding: 10px 10px;
-  left: 0;
+.header {
+  position: absolute;
+  top: 0;
   width: 100%;
   background-color: rgba(36, 36, 36, 0.9);
+}
+</style>
+
+<style>
+.pointer {
+  cursor: pointer;
 }
 </style>

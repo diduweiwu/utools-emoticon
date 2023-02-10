@@ -56,6 +56,34 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
 }
 
 /**
+ * 斗图吧表情包搜索 - 发送请求搜索表情包列表
+ * @param loading
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ */
+const fetchDouTubaEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value || !keyWord.value) {
+        return
+    }
+    loading.value = true
+    preHandle && preHandle()
+
+    const params = {curPage: pagination.value.pageNum, pageSize: 20, keyword: keyWord.value};
+
+    const config = {method: 'get', url: `https://api.doutub.com/api/bq/search`, params};
+
+    axios(config)
+        .then(function (response) {
+            const {rows} = response.data.data
+            const imgLinks = rows.map(row => row['path'].replace('https', 'http'))
+            downloadImages(imgLinks, {
+                headers: {'Referer': 'http://www.doutub.com'}
+            }).then(files => callback(files)).then(() => loading.value = false)
+        })
+}
+
+/**
  * 初始化插件
  */
 function init(keyWord, reload) {
@@ -85,7 +113,7 @@ export default function () {
 
     const pagination = ref({
         pageNum: 1,
-        pageSize: 50
+        pageSize: 20
     })
     const {fetchConfig} = UseConfig()
 
@@ -98,6 +126,9 @@ export default function () {
         }
         if ("PK斗图" === imageSource) {
             return fetchPkDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value = items)
+        }
+        if ('斗图吧' === imageSource) {
+            return fetchDouTubaEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value = items)
         }
     }
 
