@@ -24,14 +24,16 @@ export default {
 
 <template>
   <n-config-provider :theme="theme">
-    <n-notification-provider>
+    <n-message-provider placement="top" container-style="margin-top:50px" :duration="1500" closable>
       <n-layout position="absolute">
         <n-layout-header style="height: 50px;" bordered>
           <n-space justify="space-between" align="center" style="height: 50px;padding:0 10px">
             <n-space>
-              <n-button :disabled="pagination.pageNum==1" type="default" size="large" @click="previousPage">上一页
+              <n-button :focusable="false" :disabled="pagination.pageNum==1" type="default" size="large"
+                        @click="previousPage">上一页
               </n-button>
-              <n-button :disabled="!(emoticons&&emoticons.length)" type="default" size="large" @click="nextPage">下一页
+              <n-button :focusable="false" :disabled="!(emoticons&&emoticons.length)" type="default" size="large"
+                        @click="nextPage">下一页
               </n-button>
             </n-space>
             <n-space>
@@ -41,14 +43,15 @@ export default {
           </n-space>
         </n-layout-header>
         <n-layout has-sider position="absolute" style="top: 60px">
-          <n-layout content-style="padding: 0 10px">
-            <n-spin :show="loading" style="min-height: 100px" description="努力加载中~">
+          <n-layout content-style="padding: 5px 10px;" :native-scrollbar="false">
+            <n-spin :show="loading" style="min-height: 300px" description="努力加载中~">
               <ImageList :loading="loading" :emoticons="emoticons"/>
+              <n-back-top :right="40"/>
             </n-spin>
           </n-layout>
         </n-layout>
       </n-layout>
-    </n-notification-provider>
+    </n-message-provider>
   </n-config-provider>
 
 </template>

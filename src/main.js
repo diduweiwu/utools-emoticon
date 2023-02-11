@@ -3,31 +3,38 @@ import './style.css'
 import App from './App.vue'
 import {
     create,
+    NBackTop,
     NButton,
     NButtonGroup,
     NConfigProvider,
     NDrawer,
     NDrawerContent,
     NDropdown,
-    NGi,
-    NGrid,
-    NIcon,
+    NEmpty,
     NLayout,
     NLayoutHeader,
-    NLayoutSider,
-    NNotificationProvider,NEmpty,
+    NMessageProvider,
+    NText,
     NSpace,
     NSpin,
 } from 'naive-ui'
 
 const naive = create({
     components: [
-        NSpin, NIcon, NDropdown, NButtonGroup, NLayout, NLayoutSider, NLayoutHeader,
-        NGrid,
+        NBackTop,
         NButton,
-        NSpace, NDrawer, NDrawerContent,
-        NGi,
-        NNotificationProvider,NEmpty, NConfigProvider,
+        NButtonGroup,
+        NConfigProvider,
+        NDrawer,
+        NDrawerContent,
+        NDropdown,
+        NEmpty,
+        NLayout,
+        NLayoutHeader,
+        NMessageProvider,
+        NText,
+        NSpace,
+        NSpin,
     ]
 })
 createApp(App).use(naive).mount('#app')

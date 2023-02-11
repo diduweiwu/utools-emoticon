@@ -25,6 +25,7 @@ function updateImageStarList(items) {
 
 // 是否已收藏
 const starIcons = ref(fetchImageStarList())
+const starEmojiList = ref([])
 
 export default function () {
 
@@ -44,17 +45,17 @@ export default function () {
     }
 
     const fetchImageStarDisplayList = () => {
-        const items = fetchImageStarList()
-        const imageLinks = Object.entries(items).map(val => val[0])
+        const imageLinks = Object.entries(starIcons.value).map(val => val[0])
         downloadImages(imageLinks)
-        return Object.entries(items).map(val => ({imgSrc: val[0], fileSrc: val[1]}))
+        return Object.entries(starIcons.value).map(val => ({imgSrc: val[0], fileSrc: val[1]}))
     }
+
+    starEmojiList.value = fetchImageStarDisplayList()
 
     return {
         checkIfStarred,
         switchStar,
-        starIcons,
-        fetchImageStarDisplayList,
+        starEmojiList,
     }
 
 }

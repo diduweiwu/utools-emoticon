@@ -1,16 +1,14 @@
 <template>
   <div v-if="emoticons&&emoticons.length">
-    <n-grid :cols="cols" :y-gap="yGap" :x-gap="xGap">
-      <n-gi v-for="em in emoticons">
-        <img class="emoji-pic pointer" @click="()=>copy(em.fileSrc)"
-             @click.right="switchStar(em)"
-             :style="checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}"
-             :src="em.fileSrc" :width="width" :height="height"/>
-      </n-gi>
-    </n-grid>
+    <n-space justify="start">
+      <img v-for="em in emoticons" class="emoji-pic pointer" @click="()=>copy(em.fileSrc)"
+           @click.right="switchStar(em)"
+           :style="checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}"
+           :src="em.fileSrc" :width="width" :height="height"/>
+    </n-space>
   </div>
   <div v-else>
-    <n-empty v-if="!loading">
+    <n-empty v-if="!loading" size="huge">
       <template #icon>
         <svg t="1675996717002" class="icon" viewBox="0 0 1576 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
              p-id="9146" width="48" height="48">
@@ -24,7 +22,6 @@
       </template>
       {{ emptyHint }}
     </n-empty>
-
   </div>
 </template>
 
@@ -36,11 +33,8 @@ export default {
   name: "ImageList",
   props: {
     emptyHint: {type: String, default: '没有结果,切换关键字搜索下试试~'},
-    width: {type: Number, default: 180},
-    height: {type: Number, default: 180},
-    xGap: {type: Number, default: 10},
-    yGap: {type: Number, default: 5},
-    cols: {type: Number, default: 4},
+    width: {type: Number, default: 177},
+    height: {type: Number, default: 177},
     loading: {type: Boolean, default: false},
     emoticons: {type: Array, default: []}
   },
@@ -63,10 +57,10 @@ export default {
 
 <style scoped>
 .emoji-pic {
-  transition: all .3s;
+  transition: all .5s;
 }
 
 .emoji-pic:hover {
-  box-shadow: 0 0 5px rgba(27, 39, 206, 0.7);
+  box-shadow: 0 0 10px rgba(54, 63, 201, 0.9);
 }
 </style>

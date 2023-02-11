@@ -13,11 +13,11 @@ import axios from "axios";
  * @param callback
  */
 const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    preHandle && preHandle()
     if (loading.value) {
         return
     }
     loading.value = true
-    preHandle && preHandle()
     const params = {type: 'photo', page: pagination.value.pageNum, keyword: keyWord.value, more: 1};
     const config = {method: 'get', url: `https://www.pkdoutu.com/search`, params};
     axios(config)
@@ -38,11 +38,11 @@ const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param callback
  */
 const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    preHandle && preHandle()
     if (loading.value) {
         return
     }
     loading.value = true
-    preHandle && preHandle()
 
     const params = {type: 1, page: pagination.value.pageNum, keyword: keyWord.value};
 
@@ -65,11 +65,11 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param callback
  */
 const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    preHandle && preHandle()
     if (loading.value || !keyWord.value) {
         return
     }
     loading.value = true
-    preHandle && preHandle()
 
     const params = {curPage: pagination.value.pageNum, pageSize: 20, keyword: keyWord.value};
 
@@ -93,11 +93,11 @@ const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param callback
  */
 const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    preHandle && preHandle()
     if (loading.value) {
         return
     }
     loading.value = true
-    preHandle && preHandle()
 
     const config = {
         method: 'get',
@@ -133,7 +133,7 @@ function init(keyWord, reload) {
             reload()
         }
     });
-    // // 初始化进入就加载随机表情包
+    // 初始化进入就加载随机表情包
     reload()
 }
 
@@ -141,6 +141,7 @@ export default function () {
     const emoticons = ref([])
     const keyWord = ref("")
     const loading = ref(false)
+    const hasNext = ref(false)
 
     const pagination = ref({
         pageNum: 1,
@@ -196,5 +197,6 @@ export default function () {
         nextPage,
         reload,
         downloadImages, downloadImage,
+        hasNext,
     }
 }

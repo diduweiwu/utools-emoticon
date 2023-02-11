@@ -8,7 +8,6 @@ const downloadImages = async (imgLinks, config = {}, callback) => {
     }
 }
 
-
 export {
     downloadImages,
 }
