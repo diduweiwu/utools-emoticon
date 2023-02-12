@@ -4,7 +4,9 @@
 API接口为自己搜索的，如果大家有推荐的表情包接口，欢迎推荐
 其他没啥了，就是一些函数踩坑和学习的过程，在此感谢 斗图 插件的作者，
 参考和学习了插件的一些用法:)
+鸣谢logo作者：https://www.iconfinder.com/icons/7188639/happy_face_emoji_emotion_smile_smiley_emoticons_icon
 ```
+
 ## 更新日志
 
 - 2023-02-04
