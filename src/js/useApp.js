@@ -13,21 +13,20 @@ import axios from "axios";
  * @param callback
  */
 const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
-    preHandle && preHandle()
     if (loading.value) {
-        return
+        return Promise.resolve()
     }
-    loading.value = true
+    preHandle && preHandle()
     const params = {type: 'photo', page: pagination.value.pageNum, keyword: keyWord.value, more: 1};
     const config = {method: 'get', url: `https://www.pkdoutu.com/search`, params};
-    axios(config)
+    return axios(config)
         .then(function (response) {
             const $ = cheerio.load(response.data)
 
             const imgTags = $('.random_picture img.image_dtb')
             const imgLinks = imgTags.map((_, img) => img.attribs['data-original'])
-            downloadImages(imgLinks, {}, callback)
             loading.value = false
+            downloadImages(imgLinks, {}, callback)
         })
 }
 /**
@@ -38,22 +37,22 @@ const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param callback
  */
 const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
-    preHandle && preHandle()
     if (loading.value) {
-        return
+        return Promise.resolve()
     }
-    loading.value = true
+    preHandle && preHandle()
 
     const params = {type: 1, page: pagination.value.pageNum, keyword: keyWord.value};
 
     const config = {method: 'get', url: `http://www.adoutu.com/search`, params};
 
-    axios(config)
+    return axios(config)
         .then(function (response) {
             const $ = cheerio.load(response.data)
             const imgLinks = $('.picture-list img').map((_, img) => img.attribs['src'])
-            downloadImages(imgLinks, {}, callback)
+
             loading.value = false
+            downloadImages(imgLinks, {}, callback)
         })
 }
 
@@ -65,17 +64,16 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param callback
  */
 const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
-    preHandle && preHandle()
     if (loading.value || !keyWord.value) {
-        return
+        return Promise.resolve()
     }
-    loading.value = true
+    preHandle && preHandle()
 
     const params = {curPage: pagination.value.pageNum, pageSize: 20, keyword: keyWord.value};
 
     const config = {method: 'get', url: `https://api.doutub.com/api/bq/search`, params};
 
-    axios(config)
+    return axios(config)
         .then(function (response) {
             const {rows} = response.data.data
             const imgLinks = rows.map(row => row['path'].replace('https', 'http'))
@@ -93,24 +91,22 @@ const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param callback
  */
 const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
-    preHandle && preHandle()
     if (loading.value) {
-        return
+        return Promise.resolve()
     }
-    loading.value = true
+    preHandle && preHandle()
 
     const config = {
         method: 'get',
         url: `https://www.doutuwang.com/page/${pagination.value.pageNum}?s=${keyWord.value}`
     };
 
-    axios(config)
+    return axios(config)
         .then(function (response) {
             const $ = cheerio.load(response.data)
             const imgLinks = $('.post img').map((_, img) => img.attribs['src'])
 
             downloadImages(imgLinks, {}, callback)
-            loading.value = false
         })
 }
 
@@ -152,19 +148,24 @@ export default function () {
     // 数据加载
     const loadData = (pagination) => {
         const {imageSource} = fetchConfig()
+        const preHandle = () => {
+            emoticons.value = []
+            loading.value = true
+        }
+        const afterHandle = () => loading.value = false
 
         if ("爱斗图" === imageSource) {
-            return fetchAiDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value.push(...items))
+            return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
         }
         if ("PK斗图" === imageSource) {
-            return fetchPkDouTuEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value.push(...items))
+            return fetchPkDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
         }
         if ('斗图吧' === imageSource) {
-            return fetchDouTuBaEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value.push(...items))
+            return fetchDouTuBaEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
         }
 
         if ('斗图王' === imageSource) {
-            return fetchDouTuWangEmoticons(loading, pagination, keyWord, () => emoticons.value = [], items => emoticons.value.push(...items))
+            return fetchDouTuWangEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
         }
     }
 

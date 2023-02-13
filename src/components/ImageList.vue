@@ -1,10 +1,12 @@
 <template>
   <div v-if="emoticons&&emoticons.length">
     <n-space justify="start">
-      <img v-for="em in emoticons" class="emoji-pic pointer" @click="()=>copy(em.fileSrc)"
-           @click.right="switchStar(em)"
-           :style="checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}"
-           :src="em.fileSrc" :width="width" :height="height"/>
+      <template v-for="em in emoticons">
+        <img class="emoji-pic pointer" @click="()=>copy(em.fileSrc)"
+             @click.right="switchStar(em)"
+             :style="checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}"
+             :src="em.fileSrc" :width="width" :height="height"/>
+      </template>
     </n-space>
   </div>
   <div v-else>

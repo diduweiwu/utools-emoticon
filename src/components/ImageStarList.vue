@@ -21,7 +21,7 @@
           <n-text italic depth="3" v-if="starEmojiList&&starEmojiList.length">({{ starEmojiList.length }} 张)</n-text>
         </small>
       </template>
-      <ImageList :emoticons="starEmojiList" :width="151" :height="151"
+      <ImageList :emoticons="starEmojiList" :width="120" :height="120"
                  style="min-height:200px;overflow-x:hidden;overflow-y: auto"
                  empty-hint="暂无收藏,在表情上点击鼠标右键即可加入收藏哦~"/>
     </n-drawer-content>
