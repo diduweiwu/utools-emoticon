@@ -39,12 +39,15 @@ export default {
   setup() {
     const isShow = ref(false)
 
-    const {starEmojiList} = useImageStarList()
+    const {starEmojiList, reloadStarEmojiList} = useImageStarList()
 
     return {
       isShow,
       starEmojiList,
-      showModal: () => isShow.value = true,
+      showModal: () => {
+        reloadStarEmojiList()
+        isShow.value = true
+      },
       ImageList,
     }
   }

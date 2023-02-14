@@ -2,10 +2,12 @@
   <div v-if="emoticons&&emoticons.length">
     <n-space justify="start">
       <template v-for="em in emoticons">
-        <img class="emoji-pic pointer" @click="()=>copy(em.fileSrc)"
-             @click.right="switchStar(em)"
-             :style="checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}"
-             :src="em.fileSrc" :width="width" :height="height"/>
+        <div class="emoji-pic"
+             :style="{width:`${width}px`,height:`${height}px`,...checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}}">
+          <img @click="()=>copy(em.fileSrc)"
+               @click.right="switchStar(em)"
+               :src="em.fileSrc" style="width:100%;height:100%;object-fit: cover"/>
+        </div>
       </template>
     </n-space>
   </div>
@@ -60,9 +62,10 @@ export default {
 <style scoped>
 .emoji-pic {
   transition: all .5s;
+  cursor: pointer;
 }
 
 .emoji-pic:hover {
-  box-shadow: 0 0 10px rgba(54, 63, 201, 0.9);
+  box-shadow: 0 0 18px rgb(210, 10, 10);
 }
 </style>

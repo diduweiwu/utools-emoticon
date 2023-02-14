@@ -55,7 +55,7 @@ window.downloadImage = async (url, config = {}) => {
     let fileName = `${crypto.createHash('md5').update(url).digest('hex')}`
 
     // 默认组装Referer header头
-    const [host] = url.split('com')
+    const [host] = url.split('.com')
     config['headers'] = {'Referer': `${host}.com`}
 
     // 组装文件路径

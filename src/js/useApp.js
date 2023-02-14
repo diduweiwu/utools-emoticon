@@ -147,13 +147,12 @@ export default function () {
 
     // 数据加载
     const loadData = (pagination) => {
-        const {imageSource} = fetchConfig()
-        const preHandle = () => {
-            emoticons.value = []
-            loading.value = true
-        }
+        // 加载之前，统一清空图片列表
+        emoticons.value = []
+        const preHandle = () => loading.value = true
         const afterHandle = () => loading.value = false
 
+        const {imageSource} = fetchConfig()
         if ("爱斗图" === imageSource) {
             return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
         }

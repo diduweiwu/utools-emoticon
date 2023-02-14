@@ -50,12 +50,13 @@ export default function () {
         return Object.entries(starIcons.value).map(val => ({imgSrc: val[0], fileSrc: val[1]}))
     }
 
-    starEmojiList.value = fetchImageStarDisplayList()
+    const reloadStarEmojiList = ()=> starEmojiList.value = fetchImageStarDisplayList()
 
     return {
         checkIfStarred,
         switchStar,
         starEmojiList,
+        reloadStarEmojiList,
     }
 
 }
