@@ -1,5 +1,6 @@
 import {ref} from "vue";
 import {downloadImages} from "./useFiles.js";
+import {useMessage} from "naive-ui";
 
 function fetchImageStarList() {
     try {
@@ -33,13 +34,16 @@ export default function () {
         return !!starIcons.value[imgSrc]
     }
 
+    const {success} = useMessage()
     const switchStar = (imgObj) => {
         const {imgSrc, fileSrc} = imgObj
 
         if (checkIfStarred(imgSrc)) {
             delete starIcons.value[imgSrc]
+            success('已取消收藏')
         } else {
             starIcons.value[imgSrc] = fileSrc
+            success('已加入收藏')
         }
         updateImageStarList(starIcons.value)
     }
@@ -50,7 +54,7 @@ export default function () {
         return Object.entries(starIcons.value).map(val => ({imgSrc: val[0], fileSrc: val[1]}))
     }
 
-    const reloadStarEmojiList = ()=> starEmojiList.value = fetchImageStarDisplayList()
+    const reloadStarEmojiList = () => starEmojiList.value = fetchImageStarDisplayList()
 
     return {
         checkIfStarred,
