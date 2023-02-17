@@ -115,7 +115,7 @@ const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callba
  */
 function init(keyWord, reload) {
     utools.onPluginEnter(({type, payload}) => {
-        utools.setSubInput(({text}) => keyWord.value = text, "回车搜索表情包,点击图片复制～");
+        utools.setSubInput(({text}) => keyWord.value = text, "回车搜索表情包,点击复制图片,右击加入收藏～");
         if (type === 'over') {
             utools.setSubInputValue(payload)
             keyWord.value = payload
