@@ -4,7 +4,7 @@
       <template v-for="em in emoticons">
         <div class="emoji-pic"
              :style="{width:`${width}px`,height:`${height}px`,...checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}}">
-          <img @click="()=>copy(em.fileSrc)"
+          <img @click="()=>copy(em)"
                @click.right="switchStar(em)"
                :src="em.fileSrc" style="width:100%;height:100%;object-fit: cover"/>
         </div>
@@ -53,7 +53,7 @@ export default {
       emoticons,
       switchStar,
       checkIfStarred,
-      copy: (url) => window.copyImage(url),
+      copy: (em) => window.copyImage(em),
     }
   }
 }

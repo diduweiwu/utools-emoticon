@@ -3,13 +3,43 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 
+function fetchSuffix(url) {
+    const urlSegments = url.split(".")
+    let fileSuffix = urlSegments[urlSegments.length - 1]
+    if (fileSuffix !== 'gif') {
+        fileSuffix = 'jpg'
+    }
+
+    return fileSuffix
+}
+
 /**
  * 复制图片到剪贴板
  * @param filePath
  */
-window.copyImage = (filePath) => {
-    let localFilePath = filePath.replace("file://", "")
-    let copyResult = utools.copyFile(localFilePath)
+window.copyImage = ({imgSrc, fileSrc}) => {
+    let localFilePath = fileSrc.replace("file://", "")
+    const originSuffix = fetchSuffix(imgSrc)
+    const fileSuffix = fetchSuffix(localFilePath)
+
+    // 根据原始的图片链接，创建本地图片路径
+    let destFile = `${localFilePath}`
+    if (fileSuffix !== originSuffix) {
+        destFile += `.${originSuffix}`
+    }
+    if (!fs.existsSync(destFile)) {
+        fs.copyFileSync(localFilePath, destFile)
+    }
+
+    // 如果是gif，则用文件函数复制
+    let copyResult
+    if (destFile.endsWith("gif")) {
+        copyResult = utools.copyFile(destFile)
+    } else {
+        // 否则使用复制图片函数
+        copyResult = utools.copyImage(destFile)
+    }
+
     copyResult && utools.hideMainWindow()
 }
 
@@ -58,8 +88,9 @@ window.downloadImage = async (url, config = {}) => {
     const [host] = url.split('.com')
     config['headers'] = {'Referer': `${host}.com`}
 
-    // 组装文件路径
-    const filePath = `${utools.getPath("temp")}/${fileName}`
+    let fileSuffix = fetchSuffix(url)
+    // 组装文件路径,需要将文件后缀拼接上
+    const filePath = `${utools.getPath("temp")}/${fileName}.${fileSuffix}`
     if (!fs.existsSync(filePath)) {
         await fetchFile(url, filePath, config)
     }
