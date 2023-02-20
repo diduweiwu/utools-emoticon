@@ -24,7 +24,7 @@ export default {
 
 <template>
   <n-config-provider :theme="theme">
-    <n-message-provider placement="top" container-style="margin-top:50px" :duration="1500" closable>
+    <n-message-provider placement="top" container-style="margin-top:50px" :duration="1500">
       <n-layout position="absolute">
         <n-layout-header style="height: 50px;" bordered>
           <n-space justify="space-between" align="center" style="height: 50px;padding:0 10px">

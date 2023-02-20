@@ -19,14 +19,9 @@ function fetchSuffix(url) {
  */
 window.copyImage = ({imgSrc, fileSrc}) => {
     let localFilePath = fileSrc.replace("file://", "")
-    const originSuffix = fetchSuffix(imgSrc)
-    const fileSuffix = fetchSuffix(localFilePath)
 
     // 根据原始的图片链接，创建本地图片路径
-    let destFile = `${localFilePath}`
-    if (fileSuffix !== originSuffix) {
-        destFile += `.${originSuffix}`
-    }
+    let destFile = composeFilePath(imgSrc, fileSrc)
     if (!fs.existsSync(destFile)) {
         fs.copyFileSync(localFilePath, destFile)
     }
@@ -64,6 +59,7 @@ const fetchFile = (url, filePath, config) => {
     const [host, path] = url.split('.com')
 
     const request = url.startsWith('https') ? https : http
+
     return new Promise(resolve => request.get({
         host: `${host.replace('https://', '').replace('http://', '')}.com`,
         path: path,
@@ -75,22 +71,25 @@ const fetchFile = (url, filePath, config) => {
     }))
 }
 
+window.composeFilePath = (url) => {
+    // 文件名采用随机方式，避免文件冲突
+    let fileName = `${crypto.createHash('md5').update(url).digest('hex')}`
+    let fileSuffix = fetchSuffix(url)
+    // 组装文件路径,需要将文件后缀拼接上
+    return `${utools.getPath("temp")}/${fileName}.${fileSuffix}`
+}
 /**
  * 下载图片到本地临时目录
  * @param url
  * @param config
  */
 window.downloadImage = async (url, config = {}) => {
-    // 文件名采用随机方式，避免文件冲突
-    let fileName = `${crypto.createHash('md5').update(url).digest('hex')}`
-
     // 默认组装Referer header头
     const [host] = url.split('.com')
     config['headers'] = {'Referer': `${host}.com`}
 
-    let fileSuffix = fetchSuffix(url)
     // 组装文件路径,需要将文件后缀拼接上
-    const filePath = `${utools.getPath("temp")}/${fileName}.${fileSuffix}`
+    const filePath = composeFilePath(url)
     if (!fs.existsSync(filePath)) {
         await fetchFile(url, filePath, config)
     }

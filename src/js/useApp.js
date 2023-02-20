@@ -188,6 +188,11 @@ export default function () {
         loadData(pagination)
     }
 
+    // 退出或者隐藏时，清空关键字
+    utools.onPluginOut(() => {
+        keyWord.value = ''
+    })
+
     return {
         emoticons,
         loading,

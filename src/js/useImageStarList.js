@@ -51,7 +51,7 @@ export default function () {
     const fetchImageStarDisplayList = () => {
         const imageLinks = Object.entries(starIcons.value).map(val => val[0])
         downloadImages(imageLinks)
-        return Object.entries(starIcons.value).map(val => ({imgSrc: val[0], fileSrc: val[1]}))
+        return Object.entries(starIcons.value).map(val => ({imgSrc: val[0], fileSrc: `file://${window.composeFilePath(val[0])}`}))
     }
 
     const reloadStarEmojiList = () => starEmojiList.value = fetchImageStarDisplayList()
