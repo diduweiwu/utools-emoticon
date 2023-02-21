@@ -55,13 +55,23 @@ const getFileSize = (filePath) => {
     });
 }
 
-const fetchFile = (url, filePath, config) => {
-    const [host, path] = url.split('.com')
+const fetchHost = (url) => {
+    // 默认组装Referer header头
+    let domainType = ".cn"
+    if (url.indexOf(".com") > -1) {
+        domainType = ".com"
+    }
 
+    const [host, path] = url.split(domainType)
+    return {host: `${host}${domainType}`, path}
+}
+
+const fetchFile = (url, filePath, config) => {
+    const {host, path} = fetchHost(url)
     const request = url.startsWith('https') ? https : http
 
     return new Promise(resolve => request.get({
-        host: `${host.replace('https://', '').replace('http://', '')}.com`,
+        host: `${host.replace('https://', '').replace('http://', '')}`,
         path: path,
         method: 'get',
         headers: config['headers'] || {}
@@ -85,8 +95,8 @@ window.composeFilePath = (url) => {
  */
 window.downloadImage = async (url, config = {}) => {
     // 默认组装Referer header头
-    const [host] = url.split('.com')
-    config['headers'] = {'Referer': `${host}.com`}
+    const {host} = fetchHost(url)
+    config = Object.assign({'headers': {'Referer': host}, ...config})
 
     // 组装文件路径,需要将文件后缀拼接上
     const filePath = composeFilePath(url)

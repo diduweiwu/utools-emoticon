@@ -49,6 +49,16 @@ export default {
             key: '斗图王',
             disabled: config.value['imageSource'] === '斗图王'
           },
+          {
+            label: '去斗图',
+            key: '去斗图',
+            disabled: config.value['imageSource'] === '去斗图'
+          },
+          {
+            label: '表情233',
+            key: '表情233',
+            disabled: config.value['imageSource'] === '表情233'
+          },
         ]
     )
     const message = useMessage()

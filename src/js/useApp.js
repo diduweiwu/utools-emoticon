@@ -111,6 +111,61 @@ const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callba
 }
 
 /**
+ * 去斗图表情包搜索 - 发送请求搜索表情包列表
+ * @param loading
+ * @param pagination
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ */
+const fetchQuDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    // http://www.godoutu.com/search/type/face/keyword/%E5%93%88%E5%93%88/page/1.html
+    if (loading.value || !keyWord.value) {
+        return Promise.resolve()
+    }
+    preHandle && preHandle()
+
+    const config = {
+        method: 'get',
+        url: `http://www.godoutu.com/search/type/face/keyword/${keyWord.value}/page/${pagination.value.pageNum}.html`
+    };
+
+    return axios(config)
+        .then(function (response) {
+            const $ = cheerio.load(response.data)
+            const imgLinks = $('.bqppsearch').map((_, img) => img.attribs['data-original'])
+
+            downloadImages(imgLinks, {}, callback)
+        })
+}
+/**
+ * 表情2333网 表情包搜索 - 发送请求搜索表情包列表
+ * @param loading
+ * @param pagination
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ */
+const fetchBiaoQing2333Emoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    // https://biaoqing233.com/app/search/%E5%8E%89%E5%AE%B3?page=2&limit=30
+    if (loading.value || !keyWord.value) {
+        return Promise.resolve()
+    }
+    preHandle && preHandle()
+
+    const config = {
+        method: 'get',
+        url: ` https://biaoqing233.com/app/search/${keyWord.value}?page=${pagination.value.pageNum}&limit=50`
+    };
+
+    return axios(config)
+        .then(function (response) {
+            const imgLinks = response.data.docs.map(d => `https://lz.sinaimg.cn/large/${d.key}`)
+            downloadImages(imgLinks, {}, callback)
+        })
+}
+
+/**
  * 初始化插件
  */
 function init(keyWord, reload) {
@@ -147,24 +202,36 @@ export default function () {
 
     // 数据加载
     const loadData = (pagination) => {
-        // 加载之前，统一清空图片列表
-        emoticons.value = []
-        const preHandle = () => loading.value = true
-        const afterHandle = () => loading.value = false
+        try {
+            // 加载之前，统一清空图片列表
+            emoticons.value = []
+            const preHandle = () => loading.value = true
+            const afterHandle = () => loading.value = false
+            const {imageSource} = fetchConfig()
 
-        const {imageSource} = fetchConfig()
-        if ("爱斗图" === imageSource) {
-            return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
-        }
-        if ("PK斗图" === imageSource) {
-            return fetchPkDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
-        }
-        if ('斗图吧' === imageSource) {
-            return fetchDouTuBaEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
-        }
+            if ("爱斗图" === imageSource) {
+                return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
+            }
+            if ("PK斗图" === imageSource) {
+                return fetchPkDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
+            }
+            if ('斗图吧' === imageSource) {
+                return fetchDouTuBaEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
+            }
 
-        if ('斗图王' === imageSource) {
-            return fetchDouTuWangEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
+            if ('斗图王' === imageSource) {
+                return fetchDouTuWangEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
+            }
+
+            if ('去斗图' === imageSource) {
+                return fetchQuDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).finally(afterHandle)
+            }
+
+            if ('表情233' === imageSource) {
+                return fetchBiaoQing2333Emoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).finally(afterHandle)
+            }
+        } catch (e) {
+            alert('加载出错，错误信息: ' + e)
         }
     }
 

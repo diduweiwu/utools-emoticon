@@ -6,7 +6,7 @@
              :style="{width:`${width}px`,height:`${height}px`,...checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}}">
           <img @click="()=>copy(em)"
                @click.right="switchStar(em)"
-               :src="em.fileSrc" style="width:100%;height:100%;object-fit: cover"/>
+               :src="em.fileSrc" style="width:100%;height:100%"/>
         </div>
       </template>
     </n-space>
