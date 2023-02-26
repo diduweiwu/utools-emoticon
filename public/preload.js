@@ -68,7 +68,7 @@ window.composeFilePath = (url, config = {}) => {
     // 非gif类型，统一处理为jpg格式
     let fileSuffix = (path.extname(url) === '.gif') ? '.gif' : '.jpg'
     // 组装文件路径,需要将文件后缀拼接上/未指定下载目录，使用temp目录
-    return `${config['downloadPath'] || utools.getPath("temp")}/${fileName}.${fileSuffix}`
+    return `${config['downloadPath'] || utools.getPath("temp")}/${fileName}${fileSuffix}`
 }
 
 /**
