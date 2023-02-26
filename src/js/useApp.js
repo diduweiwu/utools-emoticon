@@ -1,6 +1,6 @@
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import cheerio from "cheerio";
-import UseConfig from "./useConfig.js";
+import {fetchConfig} from "./useConfig.js";
 import {downloadImages} from "./useFiles.js";
 import axios from "axios";
 
@@ -25,7 +25,6 @@ const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
 
             const imgTags = $('.random_picture img.image_dtb')
             const imgLinks = imgTags.map((_, img) => img.attribs['data-original'])
-            loading.value = false
             downloadImages(imgLinks, {}, callback)
         })
 }
@@ -51,7 +50,6 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
             const $ = cheerio.load(response.data)
             const imgLinks = $('.picture-list img').map((_, img) => img.attribs['src'])
 
-            loading.value = false
             downloadImages(imgLinks, {}, callback)
         })
 }
@@ -79,7 +77,6 @@ const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback
             const imgLinks = rows.map(row => row['path'].replace('https', 'http'))
 
             downloadImages(imgLinks, {headers: {'Referer': 'http://www.doutub.com'}}, callback)
-            loading.value = false
         })
 }
 
@@ -192,45 +189,55 @@ export default function () {
     const emoticons = ref([])
     const keyWord = ref("")
     const loading = ref(false)
-    const hasNext = ref(false)
 
     const pagination = ref({
         pageNum: 1,
         pageSize: 20
     })
-    const {fetchConfig} = UseConfig()
 
     // 数据加载
     const loadData = (pagination) => {
+        emoticons.value = []
+
+        // 数据返回后，不断追加表情包数据
+        const callback = items => {
+            loading.value = false
+            emoticons.value.push(...items)
+        }
+
+        // 加载之前，统一清空图片列表
+        const preHandle = () => loading.value = true
+
         try {
-            // 加载之前，统一清空图片列表
-            emoticons.value = []
-            const preHandle = () => loading.value = true
-            const afterHandle = () => loading.value = false
             const {imageSource} = fetchConfig()
+            // 最长8秒后，强制结束加载请求，避免页面卡死
+            setTimeout(() => callback([]), 8000)
 
             if ("爱斗图" === imageSource) {
-                return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
+                return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
-            if ("PK斗图" === imageSource) {
-                return fetchPkDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
-            }
+
             if ('斗图吧' === imageSource) {
-                return fetchDouTuBaEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
+                return fetchDouTuBaEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
 
             if ('斗图王' === imageSource) {
-                return fetchDouTuWangEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).then(afterHandle)
+                return fetchDouTuWangEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
 
             if ('去斗图' === imageSource) {
-                return fetchQuDouTuEmoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).finally(afterHandle)
+                return fetchQuDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
 
             if ('表情233' === imageSource) {
-                return fetchBiaoQing2333Emoticons(loading, pagination, keyWord, preHandle, items => emoticons.value.push(...items)).finally(afterHandle)
+                return fetchBiaoQing2333Emoticons(loading, pagination, keyWord, preHandle, callback)
+            }
+
+            if ("PK斗图" === imageSource) {
+                return fetchPkDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
         } catch (e) {
+            callback([])
             alert('加载出错，错误信息: ' + e)
         }
     }
@@ -238,10 +245,11 @@ export default function () {
     // 重置为加载第一页
     const reload = () => {
         pagination.value.pageNum = 1
+        loading.value = false
         loadData(pagination)
     }
 
-    init(keyWord, reload)
+    onMounted(() => init(keyWord, reload))
 
     // 翻页到上一页
     const nextPage = () => {
@@ -268,7 +276,5 @@ export default function () {
         previousPage,
         nextPage,
         reload,
-        downloadImages, downloadImage,
-        hasNext,
     }
 }

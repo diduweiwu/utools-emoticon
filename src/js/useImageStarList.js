@@ -1,8 +1,8 @@
-import {ref} from "vue";
-import {downloadImages} from "./useFiles.js";
+import {computed, ref} from "vue";
 import {useMessage} from "naive-ui";
+import {downloadCollectedImages} from "./useFiles.js";
 
-function fetchImageStarList() {
+function fetchCollectEmoticonMap() {
     try {
         let items = utools.dbStorage.getItem('imageStarList')
 
@@ -20,47 +20,49 @@ function fetchImageStarList() {
     }
 }
 
-function updateImageStarList(items) {
+function updateCollectEmoticonMap(items) {
     utools.dbStorage.setItem('imageStarList', JSON.stringify(items))
 }
 
 // 是否已收藏
-const starIcons = ref(fetchImageStarList())
-const starEmojiList = ref([])
+const starEmojiMap = ref(fetchCollectEmoticonMap())
+
+// 动态获取最新的表情包列表
+const starEmojiList = computed(() => {
+    const imageLinks = Object.entries(starEmojiMap.value).map(val => val[0])
+    // 尝试下载
+    downloadCollectedImages(imageLinks)
+    return Object.entries(starEmojiMap.value).map(val => ({
+        imgSrc: val[0],
+        fileSrc: `file://${window.composeCollectedFilePath(val[0])}`
+    }))
+})
 
 export default function () {
-
-    const checkIfStarred = (imgSrc) => {
-        return !!starIcons.value[imgSrc]
+    // 检查是否已经加入收藏
+    const checkIfCollected = (imgSrc) => {
+        return !!starEmojiMap.value[imgSrc]
     }
 
     const {success} = useMessage()
-    const switchStar = (imgObj) => {
+    // 切换收藏状态
+    const switchCollectedStatus = (imgObj) => {
         const {imgSrc, fileSrc} = imgObj
-
-        if (checkIfStarred(imgSrc)) {
-            delete starIcons.value[imgSrc]
+        if (checkIfCollected(imgSrc)) {
+            window.removeFile(window.composeCollectedFilePath(imgSrc))
+            delete starEmojiMap.value[imgSrc]
             success('已取消收藏')
         } else {
-            starIcons.value[imgSrc] = fileSrc
+            starEmojiMap.value[imgSrc] = fileSrc
+            downloadCollectedImages([imgSrc])
             success('已加入收藏')
         }
-        updateImageStarList(starIcons.value)
+        updateCollectEmoticonMap(starEmojiMap.value)
     }
-
-    const fetchImageStarDisplayList = () => {
-        const imageLinks = Object.entries(starIcons.value).map(val => val[0])
-        downloadImages(imageLinks)
-        return Object.entries(starIcons.value).map(val => ({imgSrc: val[0], fileSrc: `file://${window.composeFilePath(val[0])}`}))
-    }
-
-    const reloadStarEmojiList = () => starEmojiList.value = fetchImageStarDisplayList()
 
     return {
-        checkIfStarred,
-        switchStar,
+        checkIfCollected,
+        switchCollectedStatus,
         starEmojiList,
-        reloadStarEmojiList,
     }
-
 }

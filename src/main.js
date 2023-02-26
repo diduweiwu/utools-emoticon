@@ -14,9 +14,9 @@ import {
     NLayout,
     NLayoutHeader,
     NMessageProvider,
-    NText,
     NSpace,
     NSpin,
+    NText,
 } from 'naive-ui'
 
 const naive = create({

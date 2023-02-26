@@ -1,6 +1,6 @@
 <template>
   <n-dropdown trigger="hover" :options="imageSources" @select="switchImageSource" placement="bottom-start">
-    <n-button title="切换图源" type="default" size="large" :focusable="false">
+    <n-button title="切换图源" type="default" size="large" :focusable="false" :disabled="loading">
       {{ config['imageSource'] }}
       <template #icon>
         <svg t="1675949888128" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -19,52 +19,55 @@
 </template>
 
 <script>
-import UseConfig from "../js/useConfig.js";
+import {fetchConfig, updateConfig} from "../js/useConfig.js";
 import {useMessage} from "naive-ui";
 import {computed} from "vue";
 
 export default {
   name: "ImageSourceSwitcher",
   props: {
-    reload: {type: Function}
+    reload: {type: Function},
+    loading: {type: Boolean, default: false}
   },
   setup(props) {
     const {reload} = props
-    const {config, updateConfig} = UseConfig()
+    const config = fetchConfig()
 
     const imageSources = computed(
         () => [
           {
             label: '爱斗图',
             key: '爱斗图',
-            disabled: config.value['imageSource'] === '爱斗图'
+            disabled: config['imageSource'] === '爱斗图'
           },
           {
             label: '斗图吧',
             key: '斗图吧',
-            disabled: config.value['imageSource'] === '斗图吧'
+            disabled: config['imageSource'] === '斗图吧'
           },
           {
             label: '斗图王',
             key: '斗图王',
-            disabled: config.value['imageSource'] === '斗图王'
+            disabled: config['imageSource'] === '斗图王'
           },
           {
             label: '去斗图',
             key: '去斗图',
-            disabled: config.value['imageSource'] === '去斗图'
+            disabled: config['imageSource'] === '去斗图'
           },
           {
             label: '表情233',
             key: '表情233',
-            disabled: config.value['imageSource'] === '表情233'
+            disabled: config['imageSource'] === '表情233'
           },
         ]
     )
     const message = useMessage()
 
+    // 切换图源
     const switchImageSource = (value) => {
-      updateConfig(() => config.value['imageSource'] = value)
+      config['imageSource'] = value
+      updateConfig(config)
       message.success(`切换到图源-${value}`)
       reload()
     }

@@ -10,7 +10,6 @@ import {computed} from "vue";
 export default {
   components: {ImageStarList, ImageList, ImageSourceSwitcher},
   setup() {
-
     const osThemeRef = useOsTheme();
 
     return {
@@ -29,15 +28,16 @@ export default {
         <n-layout-header style="height: 50px;" bordered>
           <n-space justify="space-between" align="center" style="height: 50px;padding:0 10px">
             <n-space>
-              <n-button :focusable="false" :disabled="pagination.pageNum==1" type="default" size="large"
+              <n-button :focusable="false" :disabled="loading||pagination.pageNum===1" type="default" size="large"
                         @click="previousPage">上一页
               </n-button>
-              <n-button :focusable="false" :disabled="!(emoticons&&emoticons.length)" type="default" size="large"
+              <n-button :focusable="false" :disabled="loading||!(emoticons&&emoticons.length)" type="default"
+                        size="large"
                         @click="nextPage">下一页
               </n-button>
             </n-space>
             <n-space>
-              <ImageSourceSwitcher :reload="reload"/>
+              <ImageSourceSwitcher :reload="reload" :loading="loading"/>
               <ImageStarList ref="imageStarList"/>
             </n-space>
           </n-space>
@@ -58,16 +58,8 @@ export default {
 
 <style scoped>
 
-.header {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  background-color: rgba(36, 36, 36, 0.9);
-}
 </style>
 
 <style>
-.pointer {
-  cursor: pointer;
-}
+
 </style>

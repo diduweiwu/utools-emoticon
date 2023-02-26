@@ -3,9 +3,9 @@
     <n-space justify="start">
       <template v-for="em in emoticons">
         <div class="emoji-pic"
-             :style="{width:`${width}px`,height:`${height}px`,...checkIfStarred(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}}">
+             :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}}">
           <img @click="()=>copy(em)"
-               @click.right="switchStar(em)"
+               @click.right="switchCollectedStatus(em)"
                :src="em.fileSrc" style="width:100%;height:100%"/>
         </div>
       </template>
@@ -32,6 +32,7 @@
 <script>
 import useImageStarList from "../js/useImageStarList.js";
 import {toRefs} from "vue";
+import {useMessage} from "naive-ui";
 
 export default {
   name: "ImageList",
@@ -44,16 +45,18 @@ export default {
   },
   setup(props) {
     const {emoticons} = toRefs(props)
-    const {
-      switchStar,
-      checkIfStarred,
-    } = useImageStarList()
+    const {switchCollectedStatus, checkIfCollected,} = useImageStarList()
+
+    const {success} = useMessage()
 
     return {
       emoticons,
-      switchStar,
-      checkIfStarred,
-      copy: (em) => window.copyImage(em),
+      switchCollectedStatus,
+      checkIfCollected,
+      copy: (em) => {
+        window.copyImage(em)
+        success('复制成功~')
+      },
     }
   }
 }

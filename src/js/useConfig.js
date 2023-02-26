@@ -1,6 +1,6 @@
 import {ref} from "vue";
 
-function fetchConfig() {
+export function fetchConfig() {
     let config = utools.dbStorage.getItem('config')
 
     if (config && typeof config === 'string') {
@@ -16,7 +16,7 @@ function fetchConfig() {
  * 更新配置信息
  * @param config
  */
-function updateConfig(config) {
+export function updateConfig(config) {
     utools.dbStorage.setItem('config', JSON.stringify(config));
 }
 

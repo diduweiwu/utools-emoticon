@@ -13,15 +13,15 @@
       </svg>
     </template>
   </n-button>
-  <n-drawer v-model:show="isShow" style="width: 90%;" placement="left">
-    <n-drawer-content :native-scrollbar="false">
+  <n-drawer v-model:show="isShow" style="height: 90%" placement="bottom">
+    <n-drawer-content :native-scrollbar="false" closable>
       <template #header>
         <span>收藏夹</span>
         <small>
           <n-text italic depth="3" v-if="starEmojiList&&starEmojiList.length">({{ starEmojiList.length }} 张)</n-text>
         </small>
       </template>
-      <ImageList :emoticons="starEmojiList" :width="120" :height="120"
+      <ImageList :emoticons="starEmojiList" :width="111" :height="111"
                  style="min-height:200px;"
                  empty-hint="暂无收藏,在表情上点击鼠标右键即可加入收藏哦~"/>
     </n-drawer-content>
@@ -39,15 +39,12 @@ export default {
   setup() {
     const isShow = ref(false)
 
-    const {starEmojiList, reloadStarEmojiList} = useImageStarList()
+    const {starEmojiList} = useImageStarList()
 
     return {
       isShow,
       starEmojiList,
-      showModal: () => {
-        reloadStarEmojiList()
-        isShow.value = true
-      },
+      showModal: () => isShow.value = true,
       ImageList,
     }
   }
