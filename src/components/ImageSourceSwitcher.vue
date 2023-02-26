@@ -21,7 +21,7 @@
 <script>
 import {fetchConfig, updateConfig} from "../js/useConfig.js";
 import {useMessage} from "naive-ui";
-import {computed} from "vue";
+import {computed, onMounted, ref} from "vue";
 
 export default {
   name: "ImageSourceSwitcher",
@@ -31,34 +31,35 @@ export default {
   },
   setup(props) {
     const {reload} = props
-    const config = fetchConfig()
+    const config = ref({})
+    onMounted(() => config.value = fetchConfig())
 
     const imageSources = computed(
         () => [
           {
             label: '爱斗图',
             key: '爱斗图',
-            disabled: config['imageSource'] === '爱斗图'
+            disabled: config.value['imageSource'] === '爱斗图'
           },
           {
             label: '斗图吧',
             key: '斗图吧',
-            disabled: config['imageSource'] === '斗图吧'
+            disabled: config.value['imageSource'] === '斗图吧'
           },
           {
             label: '斗图王',
             key: '斗图王',
-            disabled: config['imageSource'] === '斗图王'
+            disabled: config.value['imageSource'] === '斗图王'
           },
           {
             label: '去斗图',
             key: '去斗图',
-            disabled: config['imageSource'] === '去斗图'
+            disabled: config.value['imageSource'] === '去斗图'
           },
           {
             label: '表情233',
             key: '表情233',
-            disabled: config['imageSource'] === '表情233'
+            disabled: config.value['imageSource'] === '表情233'
           },
         ]
     )
@@ -66,8 +67,8 @@ export default {
 
     // 切换图源
     const switchImageSource = (value) => {
-      config['imageSource'] = value
-      updateConfig(config)
+      config.value['imageSource'] = value
+      updateConfig(config.value)
       message.success(`切换到图源-${value}`)
       reload()
     }

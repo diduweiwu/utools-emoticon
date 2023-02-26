@@ -1,5 +1,3 @@
-import {ref} from "vue";
-
 export function fetchConfig() {
     let config = utools.dbStorage.getItem('config')
 
@@ -18,19 +16,4 @@ export function fetchConfig() {
  */
 export function updateConfig(config) {
     utools.dbStorage.setItem('config', JSON.stringify(config));
-}
-
-export default function () {
-    const config = ref(fetchConfig())
-
-    const _updateConfig = (updateAction) => {
-        updateAction()
-        updateConfig(config.value)
-    }
-
-    return {
-        config,
-        updateConfig: _updateConfig,
-        fetchConfig,
-    }
 }
