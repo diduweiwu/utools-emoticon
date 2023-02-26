@@ -25,7 +25,7 @@ window.checkOrCreateCollectedDirectory = () => window.checkOrCreateDirectory(`${
  * 复制图片到剪贴板
  * @param filePath
  */
-window.copyImage = ({imgSrc, fileSrc}) => {
+window.copyImage = ({imgSrc, fileSrc}, callback) => {
     let localFilePath = fileSrc.replace("file://", "")
 
     // 根据原始的图片链接，创建本地图片路径
@@ -43,6 +43,7 @@ window.copyImage = ({imgSrc, fileSrc}) => {
         copyResult = utools.copyImage(destFile)
     }
 
+    copyResult && callback && callback()
     copyResult && utools.hideMainWindow()
 }
 

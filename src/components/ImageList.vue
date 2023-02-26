@@ -5,7 +5,7 @@
         <div class="emoji-pic"
              :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}}">
           <img @click="()=>copy(em)"
-               @click.right="switchCollectedStatus(em)"
+               @click.right="()=>switchCollectedStatus(em)"
                :src="em.fileSrc" style="width:100%;height:100%"/>
         </div>
       </template>
@@ -53,10 +53,7 @@ export default {
       emoticons,
       switchCollectedStatus,
       checkIfCollected,
-      copy: (em) => {
-        window.copyImage(em)
-        success('复制成功~')
-      },
+      copy: (em) => window.copyImage(em, () => success('复制成功~')),
     }
   }
 }

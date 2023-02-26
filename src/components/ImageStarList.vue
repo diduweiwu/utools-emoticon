@@ -16,10 +16,16 @@
   <n-drawer v-model:show="isShow" style="height: 90%" placement="bottom">
     <n-drawer-content :native-scrollbar="false" closable>
       <template #header>
-        <span>收藏夹</span>
-        <small>
-          <n-text italic depth="3" v-if="starEmojiList&&starEmojiList.length">({{ starEmojiList.length }} 张)</n-text>
-        </small>
+        <n-space justify="start">
+          <div>
+            <span>收藏夹</span>
+            <small>
+              <n-text italic depth="3" v-if="starEmojiList&&starEmojiList.length">({{ starEmojiList.length }} 张)
+              </n-text>
+            </small>
+          </div>
+          <n-button size="tiny" text :focusable="false" @click="openCollectionPath">打开</n-button>
+        </n-space>
       </template>
       <ImageList :emoticons="starEmojiList" :width="111" :height="111"
                  style="min-height:200px;"
@@ -46,6 +52,7 @@ export default {
       starEmojiList,
       showModal: () => isShow.value = true,
       ImageList,
+      openCollectionPath: () => utools.shellOpenPath(checkOrCreateCollectedDirectory())
     }
   }
 }
