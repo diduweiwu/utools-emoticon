@@ -5,10 +5,11 @@ import ImageList from "./components/ImageList.vue";
 import ImageStarList from "./components/ImageStarList.vue";
 import {darkTheme, useOsTheme} from "naive-ui";
 import {computed} from "vue";
+import About from "./components/about/About.vue";
 
 
 export default {
-  components: {ImageStarList, ImageList, ImageSourceSwitcher},
+  components: {About, ImageStarList, ImageList, ImageSourceSwitcher},
   setup() {
     const osThemeRef = useOsTheme();
 
@@ -27,18 +28,21 @@ export default {
       <n-layout position="absolute">
         <n-layout-header style="height: 50px;" bordered>
           <n-space justify="space-between" align="center" style="height: 50px;padding:0 10px">
+            <n-space align="center">
+              <ImageSourceSwitcher :reload="reload" :loading="loading"/>
+              <n-divider vertical/>
+              <ImageStarList ref="imageStarList"/>
+              <n-divider vertical/>
+              <n-button @click.stop="()=>$refs.about.show()" :focusable="false" text>关于</n-button>
+            </n-space>
+
             <n-space>
-              <n-button :focusable="false" :disabled="loading||pagination.pageNum===1" type="default" size="large"
+              <n-button :focusable="false" :disabled="loading||pagination.pageNum===1" type="default"
                         @click="previousPage">上一页
               </n-button>
               <n-button :focusable="false" :disabled="loading||!(emoticons&&emoticons.length)" type="default"
-                        size="large"
                         @click="nextPage">下一页
               </n-button>
-            </n-space>
-            <n-space>
-              <ImageSourceSwitcher :reload="reload" :loading="loading"/>
-              <ImageStarList ref="imageStarList"/>
             </n-space>
           </n-space>
         </n-layout-header>
@@ -48,6 +52,7 @@ export default {
               <ImageList :loading="loading" :emoticons="emoticons"/>
               <n-back-top :right="40"/>
             </n-spin>
+            <About ref="about"/>
           </n-layout>
         </n-layout>
       </n-layout>

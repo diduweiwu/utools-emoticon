@@ -1,6 +1,6 @@
 <template>
-  <n-dropdown trigger="hover" :options="imageSources" @select="switchImageSource" placement="bottom-start">
-    <n-button title="切换图源" type="default" size="large" :focusable="false" :disabled="loading">
+  <n-dropdown v-if="false" trigger="hover" :options="imageSources" @select="switchImageSource" placement="bottom-start">
+    <n-button title="切换图源" type="default" :focusable="false" :disabled="loading">
       {{ config['imageSource'] }}
       <template #icon>
         <svg t="1675949888128" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -16,6 +16,14 @@
       </template>
     </n-button>
   </n-dropdown>
+  <n-space justify="space-between" align="center">
+    <template v-for="source in imageSources">
+      <n-tag checkable round :checked="config['imageSource']===source['key']"
+             @click="()=>switchImageSource(source['key'])">
+        {{ source['label'] }}
+      </n-tag>
+    </template>
+  </n-space>
 </template>
 
 <script>
@@ -40,6 +48,11 @@ export default {
             label: '爱斗图',
             key: '爱斗图',
             disabled: config.value['imageSource'] === '爱斗图'
+          },
+          {
+            label: '发表情',
+            key: '发表情',
+            disabled: config.value['imageSource'] === '发表情'
           },
           {
             label: '斗图吧',

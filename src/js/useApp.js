@@ -53,6 +53,30 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
             downloadImages(imgLinks, {}, callback)
         })
 }
+/**
+ * 发表情 表情包搜索 - 发送请求搜索表情包列表
+ * @param loading
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ */
+const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value) {
+        return Promise.resolve()
+    }
+    preHandle && preHandle()
+
+    const config = {method: 'get', url: `https://fabiaoqing.com/search/bqb/keyword/${keyWord.value}/type/bq/page/${pagination.value.pageNum}.html`};
+
+    return axios(config)
+        .then(function (response) {
+            const $ = cheerio.load(response.data)
+
+            const imgLinks = $('#bqb a img').map((_, img) => img.attribs['data-original'])
+
+            downloadImages(imgLinks, {'headers':{Referer:'https://fabiaoqing.com/'}}, callback)
+        })
+}
 
 /**
  * 斗图吧表情包搜索 - 发送请求搜索表情包列表
@@ -152,7 +176,7 @@ const fetchBiaoQing2333Emoticons = (loading, pagination, keyWord, preHandle, cal
 
     const config = {
         method: 'get',
-        url: ` https://biaoqing233.com/app/search/${keyWord.value}?page=${pagination.value.pageNum}&limit=50`
+        url: `https://biaoqing233.com/app/search/${keyWord.value}?page=${pagination.value.pageNum}&limit=50`
     };
 
     return axios(config)
@@ -215,6 +239,9 @@ export default function () {
 
             if ("爱斗图" === imageSource) {
                 return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
+            }
+            if ("发表情" === imageSource) {
+                return fetchFaBiaoQingEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
 
             if ('斗图吧' === imageSource) {
