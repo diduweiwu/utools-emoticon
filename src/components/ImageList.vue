@@ -1,12 +1,11 @@
 <template>
   <div v-if="emoticons&&emoticons.length">
     <n-space justify="start">
-      <template v-for="em in emoticons">
+      <template v-for="(em,index) in emoticons">
         <div class="emoji-pic"
              :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}}">
-          <img @click="()=>copy(em)"
-               @click.right="()=>switchCollectedStatus(em)"
-               :src="em.fileSrc" style="width:100%;height:100%"/>
+          <image-item :em="em" @click.middle="()=>$refs.imageCarousel.show(emoticons,index)" :src="em.fileSrc"
+                      style="width:100%;height:100%"/>
         </div>
       </template>
     </n-space>
@@ -27,33 +26,32 @@
       {{ emptyHint }}
     </n-empty>
   </div>
+  <ImageCarousel ref="imageCarousel"/>
 </template>
 
 <script>
 import useImageStarList from "../js/useImageStarList.js";
 import {toRefs} from "vue";
-import {useMessage} from "naive-ui";
+import ImageCarousel from "./ImageCarousel.vue";
+import ImageItem from "./ImageItem.vue";
 
 export default {
   name: "ImageList",
+  components: {ImageItem, ImageCarousel},
   props: {
     emptyHint: {type: String, default: '没有结果,切换关键字搜索下试试~'},
-    width: {type: Number, default: 177},
-    height: {type: Number, default: 177},
+    width: {type: Number, default: 182},
+    height: {type: Number, default: 182},
     loading: {type: Boolean, default: false},
     emoticons: {type: Array, default: []}
   },
   setup(props) {
     const {emoticons} = toRefs(props)
-    const {switchCollectedStatus, checkIfCollected,} = useImageStarList()
-
-    const {success} = useMessage()
+    const {checkIfCollected,} = useImageStarList()
 
     return {
       emoticons,
-      switchCollectedStatus,
       checkIfCollected,
-      copy: (em) => window.copyImage(em, () => success('复制成功~')),
     }
   }
 }

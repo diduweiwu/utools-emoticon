@@ -63,6 +63,10 @@ export default {
 
     // 切换图源
     const switchImageSource = (value) => {
+      // 图源没变，不做任何处理
+      if (config.value['imageSource'] === value) {
+        return;
+      }
       config.value['imageSource'] = value
       updateConfig(config.value)
       message.success(`切换到图源-${value}`)

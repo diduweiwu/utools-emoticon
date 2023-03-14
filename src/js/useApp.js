@@ -191,7 +191,7 @@ const fetchBiaoQing2333Emoticons = (loading, pagination, keyWord, preHandle, cal
  */
 function init(keyWord, reload) {
     utools.onPluginEnter(({type, payload}) => {
-        utools.setSubInput(({text}) => keyWord.value = text, "回车搜索表情包,点击复制图片,右击加入收藏～");
+        utools.setSubInput(({text}) => keyWord.value = text, "回车搜索表情包,鼠标左击复制图片,鼠标中击查看大图,鼠标右击加入收藏～");
         if (type === 'over') {
             utools.setSubInputValue(payload)
             keyWord.value = payload
