@@ -28,10 +28,15 @@ export default {
     const imageSources = computed(
         () => [
           {
-            label: '爱斗图',
-            key: '爱斗图',
-            disabled: config.value['imageSource'] === '爱斗图'
+            label: '斗图啦',
+            key: '斗图啦',
+            disabled: config.value['imageSource'] === '斗图啦'
           },
+          // {
+          //   label: '爱斗图',
+          //   key: '爱斗图',
+          //   disabled: config.value['imageSource'] === '爱斗图'
+          // },
           {
             label: '发表情',
             key: '发表情',
@@ -59,6 +64,7 @@ export default {
           },
         ]
     )
+
     const message = useMessage()
 
     // 切换图源
@@ -71,6 +77,12 @@ export default {
       updateConfig(config.value)
       message.success(`切换到图源-${value}`)
       reload()
+    }
+
+    const currentSource = imageSources.value.filter(s => s === config.value['imageSource'])
+    // 当前表情包源不可用，切换到第一个表情包源
+    if (!currentSource.length) {
+      switchImageSource(imageSources.value[0]['key'])
     }
 
     return {

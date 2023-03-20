@@ -36,7 +36,7 @@ const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param callback
  */
 const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
-    if (loading.value) {
+    if (loading.value || !keyWord.value) {
         return Promise.resolve()
     }
     preHandle && preHandle()
@@ -53,6 +53,35 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
             downloadImages(imgLinks, {}, callback)
         })
 }
+
+/**
+ * 斗图啦表情包搜索
+ * @param loading
+ * @param pagination
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ * @returns {Promise<void>|Promise<unknown>}
+ */
+const fetchDouTulaEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value || !keyWord.value) {
+        return Promise.resolve()
+    }
+    preHandle && preHandle()
+
+    const params = {page: pagination.value.pageNum, keyword: keyWord.value};
+
+    const config = {method: 'get', url: `https://dou.yuanmazg.com/so`, params};
+
+    return axios(config)
+        .then(function (response) {
+            const $ = cheerio.load(response.data)
+            const imgLinks = $('.page-content img').map((_, img) => `https://dou.yuanmazg.com/${img.attribs['data-original']}`)
+
+            downloadImages(imgLinks, {}, callback)
+        })
+}
+
 /**
  * 发表情 表情包搜索 - 发送请求搜索表情包列表
  * @param loading
@@ -66,7 +95,10 @@ const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callb
     }
     preHandle && preHandle()
 
-    const config = {method: 'get', url: `https://fabiaoqing.com/search/bqb/keyword/${keyWord.value}/type/bq/page/${pagination.value.pageNum}.html`};
+    const config = {
+        method: 'get',
+        url: `https://fabiaoqing.com/search/bqb/keyword/${keyWord.value}/type/bq/page/${pagination.value.pageNum}.html`
+    };
 
     return axios(config)
         .then(function (response) {
@@ -74,7 +106,7 @@ const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callb
 
             const imgLinks = $('#bqb a img').map((_, img) => img.attribs['data-original'])
 
-            downloadImages(imgLinks, {'headers':{Referer:'https://fabiaoqing.com/'}}, callback)
+            downloadImages(imgLinks, {'headers': {Referer: 'https://fabiaoqing.com/'}}, callback)
         })
 }
 
@@ -239,6 +271,10 @@ export default function () {
 
             if ("爱斗图" === imageSource) {
                 return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
+            }
+
+            if ("斗图啦" === imageSource) {
+                return fetchDouTulaEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
             if ("发表情" === imageSource) {
                 return fetchFaBiaoQingEmoticons(loading, pagination, keyWord, preHandle, callback)

@@ -10,12 +10,13 @@
             <n-list-item>真心感谢以下表情包数据源,该插件开源免费,无任何商业属性,若有侵权请联系作者删除～</n-list-item>
             <n-list-item>
               <n-space justify="center">
-                <a href="http://www.adoutu.com" @click="()=>openLink('http://www.adoutu.com')">爱斗图</a>
+                <a href="https://dou.yuanmazg.com" @click="()=>openLink('https://dou.yuanmazg.com')">斗图啦</a>
                 <a href="https://fabiaoqing.com" @click="()=>openLink('https://fabiaoqing.com')">发表情</a>
                 <a href="https://doutub.com" @click="()=>openLink('https://doutub.com')">斗图吧</a>
                 <a href="https://www.doutuwang.com" @click="()=>openLink('https://www.doutuwang.com')">斗图王</a>
                 <a href="http://www.godoutu.com" @click="()=>openLink('http://www.godoutu.com')">去斗图</a>
                 <a href="https://biaoqing233.com" @click="()=>openLink('https://biaoqing233.com')">表情233</a>
+                <a href="http://www.adoutu.com" @click="()=>openLink('http://www.adoutu.com')">爱斗图(已废弃)</a>
               </n-space>
             </n-list-item>
           </n-list>
