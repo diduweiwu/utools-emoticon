@@ -28,6 +28,11 @@ export default {
     const imageSources = computed(
         () => [
           {
+            label: '发表情',
+            key: '发表情',
+            disabled: config.value['imageSource'] === '发表情'
+          },
+          {
             label: '斗图啦',
             key: '斗图啦',
             disabled: config.value['imageSource'] === '斗图啦'
@@ -37,11 +42,6 @@ export default {
           //   key: '爱斗图',
           //   disabled: config.value['imageSource'] === '爱斗图'
           // },
-          {
-            label: '发表情',
-            key: '发表情',
-            disabled: config.value['imageSource'] === '发表情'
-          },
           {
             label: '斗图吧',
             key: '斗图吧',
