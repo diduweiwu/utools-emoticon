@@ -94,6 +94,13 @@ const downloadRemoteFile = (url, filePath, config) => {
     }))
 }
 
+const fetchHostMap = (host) => {
+    if (host === 'img.soutula.com') {
+        return 'https://fabiaoqing.com/'
+    }
+    return host
+}
+
 /**
  * 下载图片到本地临时目录
  * @param url
@@ -102,7 +109,7 @@ const downloadRemoteFile = (url, filePath, config) => {
 window.downloadImage = async (url, config = {}) => {
     // 默认组装Referer header头
     const {host} = urlParser.parse(url)
-    config = Object.assign({'headers': {'Referer': host}, ...config})
+    config = Object.assign({'headers': {'Referer': fetchHostMap(host)}, ...config})
 
     // 组装文件路径,需要将文件后缀拼接上
     const filePath = composeFilePath(url, config)

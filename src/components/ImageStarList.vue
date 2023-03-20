@@ -28,7 +28,6 @@
         </n-space>
       </template>
       <ImageList :emoticons="starEmojiList" :width="111" :height="111"
-                 style="min-height:200px;"
                  empty-hint="暂无收藏,在表情上点击鼠标右键即可加入收藏哦~"/>
     </n-drawer-content>
   </n-drawer>
