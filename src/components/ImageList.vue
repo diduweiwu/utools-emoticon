@@ -3,7 +3,7 @@
     <n-space justify="start">
       <template v-for="(em,index) in emoticons">
         <div class="emoji-pic"
-             :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'lightgray'}}">
+             :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'1px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'1px',borderStyle:'solid',borderColor:'lightgray'}}">
           <image-item :em="em" @click.middle="()=>$refs.imageCarousel.show(emoticons,index)" :src="em.fileSrc"
                       style="width:100%;height:100%"/>
         </div>
@@ -61,9 +61,10 @@ export default {
 .emoji-pic {
   transition: all .5s;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .emoji-pic:hover {
-  box-shadow: 0 0 18px rgb(210, 10, 10);
+  box-shadow: 0 0 15px rgb(255, 154, 2);
 }
 </style>

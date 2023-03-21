@@ -33,5 +33,6 @@ export default {
   height: 99%;
   object-fit: fill;
   cursor: pointer;
+  border-radius: 5px;
 }
 </style>
