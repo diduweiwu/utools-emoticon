@@ -13,7 +13,7 @@
       </svg>
     </template>
   </n-button>
-  <n-drawer v-model:show="isShow" style="height: 90%" placement="bottom">
+  <n-drawer v-model:show="isShow" style="height: 90%" placement="bottom" :auto-focus="false">
     <n-drawer-content :native-scrollbar="false" closable>
       <template #header>
         <n-space justify="start">

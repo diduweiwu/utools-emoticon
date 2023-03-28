@@ -5,7 +5,7 @@
                   mousewheel centered-slides :default-index="currentIndex" effect="card" draggable show-arrow>
         <template v-for="image in images">
           <n-carousel-item style="width: 80%">
-            <ImageItem class="carousel-img" :em="image"
+            <ImageItem class="carousel-img" :em="image" style="background-color: white"
                        :style="{...checkIfCollected(image.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'white'}}"
               />
           </n-carousel-item>
