@@ -241,7 +241,7 @@ function init(keyWord, reload) {
     reload()
 }
 
-export default function () {
+export default function (reloadCallback) {
     const emoticons = ref([])
     const keyWord = ref("")
     const loading = ref(false)
@@ -309,6 +309,7 @@ export default function () {
     const reload = () => {
         pagination.value.pageNum = 1
         loading.value = false
+        reloadCallback && reloadCallback()
         loadData(pagination)
     }
 

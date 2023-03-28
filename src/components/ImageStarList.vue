@@ -24,7 +24,7 @@
               </n-text>
             </small>
           </div>
-          <n-button size="tiny" text :focusable="false" @click="openCollectionPath">打开</n-button>
+          <n-button text :focusable="false" @click="openCollectionPath">打开</n-button>
         </n-space>
       </template>
       <ImageList :emoticons="starEmojiList" :width="111" :height="111"
@@ -50,6 +50,7 @@ export default {
       isShow,
       starEmojiList,
       showModal: () => isShow.value = true,
+      close: () => isShow.value = false,
       ImageList,
       openCollectionPath: () => utools.shellOpenPath(checkOrCreateCollectedDirectory())
     }

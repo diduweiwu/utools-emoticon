@@ -35,7 +35,7 @@ const starEmojiList = computed(() => {
     return Object.entries(starEmojiMap.value).map(val => ({
         imgSrc: val[0],
         fileSrc: `file://${window.composeCollectedFilePath(val[0])}`
-    }))
+    })).reverse()
 })
 
 export default function () {
