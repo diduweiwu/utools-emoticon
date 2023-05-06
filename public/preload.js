@@ -22,6 +22,25 @@ window.checkOrCreateDirectory = (directoryPath) => {
 window.checkOrCreateCollectedDirectory = () => window.checkOrCreateDirectory(`${utools.getPath('userData')}/collectedEmoticons`)
 
 /**
+ * 二次复制策略,gif直接使用copyFile,其他格式先使用copyImage,失败则使用copyFile重试复制
+ * @param destFile
+ * @returns {*}
+ */
+window.tryCopy = (destFile) => {
+    // 如果是gif，则用文件函数复制,copyFile方法一般不会失败
+    if (destFile.endsWith("gif")) {
+        return utools.copyFile(destFile)
+    }
+
+    // 其他格式尝试使用copyImage方法,但是可能失败,则使用copyFile重试
+    let copyResult = utools.copyImage(destFile)
+    if (!copyResult) {
+        copyResult = utools.copyFile(destFile)
+    }
+
+    return copyResult
+}
+/**
  * 复制图片到剪贴板
  * @param filePath
  */
@@ -34,17 +53,14 @@ window.copyImage = ({imgSrc, fileSrc}, callback) => {
         fs.copyFileSync(localFilePath, destFile)
     }
 
-    // 如果是gif，则用文件函数复制
-    let copyResult
-    if (destFile.endsWith("gif")) {
-        copyResult = utools.copyFile(destFile)
-    } else {
-        // 否则使用复制图片函数
-        copyResult = utools.copyImage(destFile)
-    }
+    const copyResult = window.tryCopy(destFile)
 
-    copyResult && callback && callback()
-    copyResult && utools.hideMainWindow()
+    if (!copyResult) {
+        utools.showNotification("复制失败,麻烦告知作者操作流程进行问题排查,感谢~")
+        return
+    }
+    callback && callback()
+    utools.hideMainWindow()
 }
 
 // 移除本地文件
