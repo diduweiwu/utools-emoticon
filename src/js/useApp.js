@@ -64,14 +64,19 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @returns {Promise<void>|Promise<unknown>}
  */
 const fetchDouTulaEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
-    if (loading.value || !keyWord.value) {
+    if (loading.value) {
         return Promise.resolve()
     }
     preHandle && preHandle()
 
-    const params = {page: pagination.value.pageNum, keyword: keyWord.value};
+    // 没有关键字的时候,加载最新表情包
+    let params = {page: pagination.value.pageNum, keyword: keyWord.value};
+    let url = 'https://dou.yuanmazg.com/so'
+    if (!keyWord.value) {
+        url = 'https://dou.yuanmazg.com/doutu'
+    }
 
-    const config = {method: 'get', url: `https://dou.yuanmazg.com/so`, params};
+    const config = {method: 'get', url, params};
 
     return axios(config)
         .then(function (response) {
@@ -94,11 +99,13 @@ const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callb
         return Promise.resolve()
     }
     preHandle && preHandle()
+    let url = `https://fabiaoqing.com/search/bqb/keyword/${keyWord.value}/type/bq/page/${pagination.value.pageNum}.html`
+    // 没有关键字,加载热门表情包
+    if (!keyWord.value) {
+        url = `https://fabiaoqing.com/biaoqing/lists/page/${pagination.value.pageNum}.html`
+    }
 
-    const config = {
-        method: 'get',
-        url: `https://fabiaoqing.com/search/bqb/keyword/${keyWord.value}/type/bq/page/${pagination.value.pageNum}.html`
-    };
+    const config = {method: 'get', url};
 
     return axios(config)
         .then(function (response) {
@@ -118,14 +125,21 @@ const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callb
  * @param callback
  */
 const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
-    if (loading.value || !keyWord.value) {
+    if (loading.value) {
         return Promise.resolve()
     }
     preHandle && preHandle()
 
-    const params = {curPage: pagination.value.pageNum, pageSize: 20, keyword: keyWord.value};
+    let params = {curPage: pagination.value.pageNum, pageSize: 20, keyword: keyWord.value};
+    let url = 'https://api.doutub.com/api/bq/search'
 
-    const config = {method: 'get', url: `https://api.doutub.com/api/bq/search`, params};
+    // 没有关键字,加载热门表情包
+    if (!keyWord.value) {
+        url = 'https://api.doutub.com/api/bq/queryNewBq'
+        params = {curPage: pagination.value.pageNum, typeId: 1, isShowIndex: false, pageSize: 50};
+    }
+
+    const config = {method: 'get', url, params};
 
     return axios(config)
         .then(function (response) {
@@ -149,10 +163,11 @@ const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callba
     }
     preHandle && preHandle()
 
-    const config = {
-        method: 'get',
-        url: `https://www.doutuwang.com/page/${pagination.value.pageNum}?s=${keyWord.value}`
-    };
+    let url = `https://www.doutuwang.com/page/${pagination.value.pageNum}?s=${keyWord.value}`
+    if (!keyWord.value) {
+        url = `https://www.doutuwang.com/category/dashijian/page/${pagination.value.pageNum}`
+    }
+    const config = {method: 'get', url};
 
     return axios(config)
         .then(function (response) {
@@ -173,20 +188,24 @@ const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callba
  */
 const fetchQuDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
     // http://www.godoutu.com/search/type/face/keyword/%E5%93%88%E5%93%88/page/1.html
-    if (loading.value || !keyWord.value) {
+    if (loading.value) {
         return Promise.resolve()
     }
     preHandle && preHandle()
 
-    const config = {
-        method: 'get',
-        url: `http://www.godoutu.com/search/type/face/keyword/${keyWord.value}/page/${pagination.value.pageNum}.html`
-    };
+    let url = `http://www.godoutu.com/search/type/face/keyword/${keyWord.value}/page/${pagination.value.pageNum}.html`
+    let img_matcher = '.bqppsearch'
+    if (!keyWord.value) {
+        url = `http://www.godoutu.com/face/hot/page/${pagination.value.pageNum}.html`
+        img_matcher = '.tagbqppdiv img'
+    }
+
+    const config = {method: 'get', url};
 
     return axios(config)
         .then(function (response) {
             const $ = cheerio.load(response.data)
-            const imgLinks = $('.bqppsearch').map((_, img) => img.attribs['data-original'])
+            const imgLinks = $(img_matcher).map((_, img) => img.attribs['data-original'])
 
             downloadImages(imgLinks, {}, callback)
         })

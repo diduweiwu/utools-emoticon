@@ -15,7 +15,7 @@
                 <a href="https://doutub.com" @click="()=>openLink('https://doutub.com')">斗图吧</a>
                 <a href="https://www.doutuwang.com" @click="()=>openLink('https://www.doutuwang.com')">斗图王</a>
                 <a href="http://www.godoutu.com" @click="()=>openLink('http://www.godoutu.com')">去斗图</a>
-                <a href="https://biaoqing233.com" @click="()=>openLink('https://biaoqing233.com')">表情233</a>
+                <a href="https://biaoqing233.com" @click="()=>openLink('https://biaoqing233.com')">表情233(已废弃)</a>
                 <a href="http://www.adoutu.com" @click="()=>openLink('http://www.adoutu.com')">爱斗图(已废弃)</a>
               </n-space>
             </n-list-item>

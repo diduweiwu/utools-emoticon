@@ -149,3 +149,10 @@ window.downloadImage = async (url, config = {}) => {
         fileSrc: `file://${filePath}`,
     }
 }
+
+/**
+ * 使用浏览器打开超链接
+ * @param link
+ * @returns {*}
+ */
+window.openLink = (link) => utools.shellOpenExternal(link)

@@ -1,8 +1,8 @@
 <template>
   <n-space justify="space-between" align="center">
     <template v-for="source in imageSources">
-      <n-tag checkable round :checked="config['imageSource']===source['key']"
-             @click="()=>switchImageSource(source['key'])">
+      <n-tag checkable :checked="config['imageSource']===source['key']"
+             @click="()=>switchImageSource(source['key'])" @click.middle="()=>openLink(source['host'])">
         {{ source['label'] }}
       </n-tag>
     </template>
@@ -30,38 +30,35 @@ export default {
           {
             label: '发表情',
             key: '发表情',
-            disabled: config.value['imageSource'] === '发表情'
+            disabled: config.value['imageSource'] === '发表情',
+            host: 'https://fabiaoqing.com'
           },
           {
             label: '斗图啦',
             key: '斗图啦',
-            disabled: config.value['imageSource'] === '斗图啦'
+            disabled: config.value['imageSource'] === '斗图啦',
+            host: 'https://dou.yuanmazg.com'
           },
-          // {
-          //   label: '爱斗图',
-          //   key: '爱斗图',
-          //   disabled: config.value['imageSource'] === '爱斗图'
-          // },
+
           {
             label: '斗图吧',
             key: '斗图吧',
-            disabled: config.value['imageSource'] === '斗图吧'
+            disabled: config.value['imageSource'] === '斗图吧',
+            host: 'https://doutub.com'
           },
           {
             label: '斗图王',
             key: '斗图王',
-            disabled: config.value['imageSource'] === '斗图王'
+            disabled: config.value['imageSource'] === '斗图王',
+            host: 'https://www.doutuwang.com'
           },
           {
             label: '去斗图',
             key: '去斗图',
-            disabled: config.value['imageSource'] === '去斗图'
+            disabled: config.value['imageSource'] === '去斗图',
+            host: 'http://www.godoutu.com'
           },
-          {
-            label: '表情233',
-            key: '表情233',
-            disabled: config.value['imageSource'] === '表情233'
-          },
+
         ]
     )
 
@@ -89,6 +86,7 @@ export default {
       config,
       imageSources,
       switchImageSource,
+      openLink: window.openLink
     }
   }
 }
