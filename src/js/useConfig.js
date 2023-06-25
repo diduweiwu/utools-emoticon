@@ -6,7 +6,7 @@ export function fetchConfig() {
     }
 
     return {
-        imageSource: '爱斗图',
+        imageSource: '发表情',
     }
 }
 

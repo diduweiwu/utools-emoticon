@@ -12,7 +12,7 @@
 <script>
 import {fetchConfig, updateConfig} from "../js/useConfig.js";
 import {useMessage} from "naive-ui";
-import {computed, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 
 export default {
   name: "ImageSourceSwitcher",
@@ -23,7 +23,7 @@ export default {
   setup(props) {
     const {reload} = props
     const config = ref({})
-    onMounted(() => config.value = fetchConfig())
+    config.value = fetchConfig()
 
     const imageSources = computed(
         () => [
@@ -58,6 +58,18 @@ export default {
             disabled: config.value['imageSource'] === '去斗图',
             host: 'http://www.godoutu.com'
           },
+          {
+            label: '爱斗图',
+            key: '爱斗图',
+            disabled: config.value['imageSource'] === '爱斗图',
+            host: 'http://www.adoutu.com'
+          },
+          {
+            label: '逗比表情包',
+            key: '逗比表情包',
+            disabled: config.value['imageSource'] === '逗比表情包',
+            host: 'https://www.dbbqb.com'
+          },
 
         ]
     )
@@ -76,7 +88,7 @@ export default {
       reload()
     }
 
-    const currentSource = imageSources.value.filter(s => s === config.value['imageSource'])
+    const currentSource = imageSources.value.filter(s => s.key === config.value['imageSource'])
     // 当前表情包源不可用，切换到第一个表情包源
     if (!currentSource.length) {
       switchImageSource(imageSources.value[0]['key'])

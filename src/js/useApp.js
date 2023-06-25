@@ -36,19 +36,28 @@ const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
  * @param callback
  */
 const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
-    if (loading.value || !keyWord.value) {
+    if (loading.value) {
         return Promise.resolve()
     }
     preHandle && preHandle()
 
-    const params = {type: 1, page: pagination.pageNum.value, keyword: keyWord.value};
+    let params = {type: 1, page: pagination.pageNum.value, keyword: keyWord.value};
+    let url = `http://www.adoutu.com/search`
 
-    const config = {method: 'get', url: `http://www.adoutu.com/search`, params};
+    // 没有关键字的时候,加载热门表情包
+    if (!keyWord.value) {
+        url = `http://www.adoutu.com/picture/list/${pagination.pageNum.value}`
+        params = {}
+    }
+    const config = {method: 'get', url, params};
 
     return axios(config)
         .then(function (response) {
             const $ = cheerio.load(response.data)
             const imgLinks = $('.picture-list img').map((_, img) => img.attribs['src'])
+
+            pagination.hasLess.value = pagination.pageNum.value > 1
+            pagination.hasMore.value = $('.pagination .page-link:contains(">>")').length > 0;
 
             downloadImages(imgLinks, {}, callback)
         })
@@ -83,7 +92,7 @@ const fetchDouTulaEmoticons = (loading, pagination, keyWord, preHandle, callback
             const $ = cheerio.load(response.data)
             const imgLinks = $('.page-content img').map((_, img) => `https://dou.yuanmazg.com/${img.attribs['data-original']}`)
 
-            pagination.hasLess.value = $('.pagination .disabled:contains("«")').length === 0;
+            pagination.hasLess.value = pagination.pageNum.value > 1
             pagination.hasMore.value = $('.pagination .disabled:contains("»")').length === 0;
 
             downloadImages(imgLinks, {}, callback)
@@ -116,7 +125,7 @@ const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callb
 
             const imgLinks = $('#bqb a img').map((_, img) => img.attribs['data-original'])
 
-            pagination.hasLess.value = $('.menu .item:contains("上一页")').length > 0;
+            pagination.hasLess.value = pagination.pageNum.value > 1
             pagination.hasMore.value = $('.menu .item:contains("下一页")').length > 0;
 
             downloadImages(imgLinks, {'headers': {Referer: 'https://fabiaoqing.com/'}}, callback)
@@ -152,7 +161,7 @@ const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback
             const {rows, count} = response.data.data
             const imgLinks = rows.map(row => row['path'].replace('https', 'http'))
 
-            pagination.hasLess.value = pagination.pageNum.value > 1;
+            pagination.hasLess.value = pagination.pageNum.value > 1
             pagination.hasMore.value = pagination.pageNum.value * pagination.pageSize.value < count;
 
             downloadImages(imgLinks, {headers: {'Referer': 'http://www.doutub.com'}}, callback)
@@ -183,7 +192,7 @@ const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callba
             const $ = cheerio.load(response.data)
             const imgLinks = $('.post img').map((_, img) => img.attribs['src'])
 
-            pagination.hasLess.value = $('.pagination .prev').length > 0;
+            pagination.hasLess.value = pagination.pageNum.value > 1
             pagination.hasMore.value = $('.pagination .next').length > 0;
 
             downloadImages(imgLinks, {}, callback)
@@ -219,7 +228,7 @@ const fetchQuDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
             const $ = cheerio.load(response.data)
             const imgLinks = $(img_matcher).map((_, img) => img.attribs['data-original'])
 
-            pagination.hasLess.value = $('.menu .item:contains("上一页")').length > 0;
+            pagination.hasLess.value = pagination.pageNum.value > 1
             pagination.hasMore.value = $('.menu .item:contains("下一页")').length > 0;
 
             downloadImages(imgLinks, {}, callback)
@@ -248,6 +257,46 @@ const fetchBiaoQing2333Emoticons = (loading, pagination, keyWord, preHandle, cal
     return axios(config)
         .then(function (response) {
             const imgLinks = response.data.docs.map(d => `https://lz.sinaimg.cn/large/${d.key}`)
+            downloadImages(imgLinks, {}, callback)
+        })
+}
+
+/**
+ * 逗比表情包 搜索 - 发送请求搜索表情包列表
+ * @param loading
+ * @param pagination
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ * @returns {Promise<void>|Promise<unknown>}
+ */
+const fetchDbbqbEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value) {
+        return Promise.resolve()
+    }
+    preHandle && preHandle()
+    let params = {
+        start: (pagination.pageNum.value - 1) * pagination.pageSize.value,
+        w: keyWord.value
+    }
+    if (!keyWord.value) {
+        params = {size: pagination.pageSize.value}
+    }
+
+    const config = {
+        method: 'get',
+        headers: {"Web-Agent": "web"},
+        url: `https://www.dbbqb.com/api/search/json`,
+        params
+    };
+
+    return axios(config)
+        .then(function (response) {
+            const imgLinks = response.data.map(img => `https://image.dbbqb.com/${img.path}`)
+            pagination.hasLess.value = pagination.pageNum.value > 1
+            pagination.hasMore.value = response.data.length >= pagination.pageSize.value;
+
+
             downloadImages(imgLinks, {}, callback)
         })
 }
@@ -328,12 +377,8 @@ export default function (reloadCallback) {
                 return fetchQuDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
 
-            if ('表情233' === imageSource) {
-                return fetchBiaoQing2333Emoticons(loading, pagination, keyWord, preHandle, callback)
-            }
-
-            if ("PK斗图" === imageSource) {
-                return fetchPkDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
+            if ('逗比表情包' === imageSource) {
+                return fetchDbbqbEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
         } catch (e) {
             callback([])
@@ -343,6 +388,10 @@ export default function (reloadCallback) {
 
     // 重置为加载第一页
     const reload = () => {
+        // 正在加载中,不再进行新的数据加载
+        if (!!loading.value) {
+            return
+        }
         pagination.pageNum.value = 1
         loading.value = false
         reloadCallback && reloadCallback()
