@@ -1,4 +1,4 @@
-import {onMounted, ref} from "vue";
+import {onMounted, reactive, ref, toRefs} from "vue";
 import cheerio from "cheerio";
 import {fetchConfig} from "./useConfig.js";
 import {downloadImages} from "./useFiles.js";
@@ -17,7 +17,7 @@ const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
         return Promise.resolve()
     }
     preHandle && preHandle()
-    const params = {type: 'photo', page: pagination.value.pageNum, keyword: keyWord.value, more: 1};
+    const params = {type: 'photo', page: pagination.pageNum.value, keyword: keyWord.value, more: 1};
     const config = {method: 'get', url: `https://www.pkdoutu.com/search`, params};
     return axios(config)
         .then(function (response) {
@@ -41,7 +41,7 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
     }
     preHandle && preHandle()
 
-    const params = {type: 1, page: pagination.value.pageNum, keyword: keyWord.value};
+    const params = {type: 1, page: pagination.pageNum.value, keyword: keyWord.value};
 
     const config = {method: 'get', url: `http://www.adoutu.com/search`, params};
 
@@ -70,7 +70,7 @@ const fetchDouTulaEmoticons = (loading, pagination, keyWord, preHandle, callback
     preHandle && preHandle()
 
     // 没有关键字的时候,加载最新表情包
-    let params = {page: pagination.value.pageNum, keyword: keyWord.value};
+    let params = {page: pagination.pageNum.value, keyword: keyWord.value};
     let url = 'https://dou.yuanmazg.com/so'
     if (!keyWord.value) {
         url = 'https://dou.yuanmazg.com/doutu'
@@ -82,6 +82,9 @@ const fetchDouTulaEmoticons = (loading, pagination, keyWord, preHandle, callback
         .then(function (response) {
             const $ = cheerio.load(response.data)
             const imgLinks = $('.page-content img').map((_, img) => `https://dou.yuanmazg.com/${img.attribs['data-original']}`)
+
+            pagination.hasLess.value = $('.pagination .disabled:contains("«")').length === 0;
+            pagination.hasMore.value = $('.pagination .disabled:contains("»")').length === 0;
 
             downloadImages(imgLinks, {}, callback)
         })
@@ -99,10 +102,10 @@ const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callb
         return Promise.resolve()
     }
     preHandle && preHandle()
-    let url = `https://fabiaoqing.com/search/bqb/keyword/${keyWord.value}/type/bq/page/${pagination.value.pageNum}.html`
+    let url = `https://fabiaoqing.com/search/bqb/keyword/${keyWord.value}/type/bq/page/${pagination.pageNum.value}.html`
     // 没有关键字,加载热门表情包
     if (!keyWord.value) {
-        url = `https://fabiaoqing.com/biaoqing/lists/page/${pagination.value.pageNum}.html`
+        url = `https://fabiaoqing.com/biaoqing/lists/page/${pagination.pageNum.value}.html`
     }
 
     const config = {method: 'get', url};
@@ -112,6 +115,9 @@ const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callb
             const $ = cheerio.load(response.data)
 
             const imgLinks = $('#bqb a img').map((_, img) => img.attribs['data-original'])
+
+            pagination.hasLess.value = $('.menu .item:contains("上一页")').length > 0;
+            pagination.hasMore.value = $('.menu .item:contains("下一页")').length > 0;
 
             downloadImages(imgLinks, {'headers': {Referer: 'https://fabiaoqing.com/'}}, callback)
         })
@@ -130,21 +136,24 @@ const fetchDouTuBaEmoticons = (loading, pagination, keyWord, preHandle, callback
     }
     preHandle && preHandle()
 
-    let params = {curPage: pagination.value.pageNum, pageSize: 20, keyword: keyWord.value};
+    let params = {curPage: pagination.pageNum.value, pageSize: 20, keyword: keyWord.value};
     let url = 'https://api.doutub.com/api/bq/search'
 
     // 没有关键字,加载热门表情包
     if (!keyWord.value) {
         url = 'https://api.doutub.com/api/bq/queryNewBq'
-        params = {curPage: pagination.value.pageNum, typeId: 1, isShowIndex: false, pageSize: 50};
+        params = {curPage: pagination.pageNum.value, typeId: 1, isShowIndex: false, pageSize: 50};
     }
 
     const config = {method: 'get', url, params};
 
     return axios(config)
         .then(function (response) {
-            const {rows} = response.data.data
+            const {rows, count} = response.data.data
             const imgLinks = rows.map(row => row['path'].replace('https', 'http'))
+
+            pagination.hasLess.value = pagination.pageNum.value > 1;
+            pagination.hasMore.value = pagination.pageNum.value * pagination.pageSize.value < count;
 
             downloadImages(imgLinks, {headers: {'Referer': 'http://www.doutub.com'}}, callback)
         })
@@ -163,9 +172,9 @@ const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callba
     }
     preHandle && preHandle()
 
-    let url = `https://www.doutuwang.com/page/${pagination.value.pageNum}?s=${keyWord.value}`
+    let url = `https://www.doutuwang.com/page/${pagination.pageNum.value}?s=${keyWord.value}`
     if (!keyWord.value) {
-        url = `https://www.doutuwang.com/category/dashijian/page/${pagination.value.pageNum}`
+        url = `https://www.doutuwang.com/category/dashijian/page/${pagination.pageNum.value}`
     }
     const config = {method: 'get', url};
 
@@ -173,6 +182,9 @@ const fetchDouTuWangEmoticons = (loading, pagination, keyWord, preHandle, callba
         .then(function (response) {
             const $ = cheerio.load(response.data)
             const imgLinks = $('.post img').map((_, img) => img.attribs['src'])
+
+            pagination.hasLess.value = $('.pagination .prev').length > 0;
+            pagination.hasMore.value = $('.pagination .next').length > 0;
 
             downloadImages(imgLinks, {}, callback)
         })
@@ -193,10 +205,10 @@ const fetchQuDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
     }
     preHandle && preHandle()
 
-    let url = `http://www.godoutu.com/search/type/face/keyword/${keyWord.value}/page/${pagination.value.pageNum}.html`
+    let url = `http://www.godoutu.com/search/type/face/keyword/${keyWord.value}/page/${pagination.pageNum.value}.html`
     let img_matcher = '.bqppsearch'
     if (!keyWord.value) {
-        url = `http://www.godoutu.com/face/hot/page/${pagination.value.pageNum}.html`
+        url = `http://www.godoutu.com/face/hot/page/${pagination.pageNum.value}.html`
         img_matcher = '.tagbqppdiv img'
     }
 
@@ -206,6 +218,9 @@ const fetchQuDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
         .then(function (response) {
             const $ = cheerio.load(response.data)
             const imgLinks = $(img_matcher).map((_, img) => img.attribs['data-original'])
+
+            pagination.hasLess.value = $('.menu .item:contains("上一页")').length > 0;
+            pagination.hasMore.value = $('.menu .item:contains("下一页")').length > 0;
 
             downloadImages(imgLinks, {}, callback)
         })
@@ -227,7 +242,7 @@ const fetchBiaoQing2333Emoticons = (loading, pagination, keyWord, preHandle, cal
 
     const config = {
         method: 'get',
-        url: `https://biaoqing233.com/app/search/${keyWord.value}?page=${pagination.value.pageNum}&limit=50`
+        url: `https://biaoqing233.com/app/search/${keyWord.value}?page=${pagination.pageNum.value}&limit=50`
     };
 
     return axios(config)
@@ -265,10 +280,12 @@ export default function (reloadCallback) {
     const keyWord = ref("")
     const loading = ref(false)
 
-    const pagination = ref({
+    const pagination = toRefs(reactive({
         pageNum: 1,
-        pageSize: 20
-    })
+        pageSize: 20,
+        hasMore: false,
+        hasLess: false,
+    }))
 
     // 数据加载
     const loadData = (pagination) => {
@@ -326,7 +343,7 @@ export default function (reloadCallback) {
 
     // 重置为加载第一页
     const reload = () => {
-        pagination.value.pageNum = 1
+        pagination.pageNum.value = 1
         loading.value = false
         reloadCallback && reloadCallback()
         loadData(pagination)
@@ -336,13 +353,13 @@ export default function (reloadCallback) {
 
     // 翻页到上一页
     const nextPage = () => {
-        pagination.value.pageNum++
+        pagination.pageNum.value++
         loadData(pagination)
     }
 
     // 翻页到下一页
     const previousPage = () => {
-        pagination.value.pageNum--
+        pagination.pageNum.value--
         loadData(pagination)
     }
 
