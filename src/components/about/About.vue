@@ -16,7 +16,7 @@
                 <a href="https://www.doutuwang.com" @click="()=>openLink('https://www.doutuwang.com')">斗图王</a>
                 <a href="http://www.godoutu.com" @click="()=>openLink('http://www.godoutu.com')">去斗图</a>
                 <a href="http://www.adoutu.com" @click="()=>openLink('http://www.adoutu.com')">爱斗图</a>
-                <a href="http://www.dbbqb.com" @click="()=>openLink('http://www.dbbqb.com')">逗比表情包</a>
+                <a href="http://www.dbbqb.com" @click="()=>openLink('http://www.dbbqb.com')">逗比表情包(废弃,有VIP限制)</a>
                 <a href="https://biaoqing233.com" @click="()=>openLink('https://biaoqing233.com')">表情233(已废弃)</a>
               </n-space>
             </n-list-item>

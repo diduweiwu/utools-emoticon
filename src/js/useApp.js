@@ -294,6 +294,7 @@ const fetchDbbqbEmoticons = (loading, pagination, keyWord, preHandle, callback) 
         .then(function (response) {
             const imgLinks = response.data.map(img => `https://image.dbbqb.com/${img.path}`)
             pagination.hasLess.value = pagination.pageNum.value > 1
+            console.log(response.data.length)
             pagination.hasMore.value = response.data.length >= pagination.pageSize.value;
 
 
