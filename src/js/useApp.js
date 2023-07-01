@@ -115,6 +115,9 @@ const fetchFaBiaoQingEmoticons = (loading, pagination, keyWord, preHandle, callb
     // 没有关键字,加载热门表情包
     if (!keyWord.value) {
         url = `https://fabiaoqing.com/biaoqing/lists/page/${pagination.pageNum.value}.html`
+        if (pagination.pageNum.value === 1) {
+            url = `https://fabiaoqing.com/biaoqing`
+        }
     }
 
     const config = {method: 'get', url};
