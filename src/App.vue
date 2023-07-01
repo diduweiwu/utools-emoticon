@@ -27,15 +27,15 @@ export default {
     <n-message-provider placement="top" container-style="margin-top:40px" :duration="1500">
       <n-layout position="absolute">
         <n-layout-header style="height: 45px;" bordered>
-          <n-space justify="space-between" align="center" style="height:100%;padding:0 10px">
-            <n-space align="center">
+          <n-space justify="space-between" align="center" size="small" style="height:100%;padding:0 5px">
+            <n-space align="center" justify="center" size="small">
               <ImageSourceSwitcher :reload="reload" :loading="loading"/>
-              <ImageStarList ref="imageStarList"/>
-              <n-button @click.stop="()=>$refs.about.show()" :focusable="false" text>
-                <img src="/src/assets/info.png" style="width: 18px" alt="关于"/>
-              </n-button>
+                <ImageStarList ref="imageStarList"/>
+                <n-button @click.stop="()=>$refs.about.show()" :focusable="false" size="tiny" text>
+                  关于
+                </n-button>
             </n-space>
-            <n-space align="center">
+            <n-space align="center" size="small">
               <n-button :focusable="false" size="small" :disabled="loading||!pagination.hasLess.value" type="default"
                         @click="previousPage">上一页
               </n-button>

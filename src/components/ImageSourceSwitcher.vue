@@ -1,5 +1,5 @@
 <template>
-  <n-space justify="space-between" align="center">
+  <n-space justify="start" align="center" size="small">
     <template v-for="source in imageSources">
       <n-tag checkable :checked="config['imageSource']===source['key']"
              @click="()=>switchImageSource(source['key'])" @click.middle="()=>openLink(source['host'])">
@@ -64,12 +64,18 @@ export default {
             disabled: config.value['imageSource'] === '爱斗图',
             host: 'http://www.adoutu.com'
           },
-          // {
-          //   label: '逗比表情包',
-          //   key: '逗比表情包',
-          //   disabled: config.value['imageSource'] === '逗比表情包',
-          //   host: 'https://www.dbbqb.com'
-          // },
+          {
+            label: '逗比表情包',
+            key: '逗比表情包',
+            disabled: config.value['imageSource'] === '逗比表情包',
+            host: 'https://www.dbbqb.com'
+          },
+          {
+            label: '百度',
+            key: '百度',
+            disabled: config.value['imageSource'] === '百度',
+            host: 'https://image.baidu.com'
+          },
 
         ]
     )

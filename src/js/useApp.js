@@ -294,13 +294,46 @@ const fetchDbbqbEmoticons = (loading, pagination, keyWord, preHandle, callback) 
         .then(function (response) {
             const imgLinks = response.data.map(img => `https://image.dbbqb.com/${img.path}`)
             pagination.hasLess.value = pagination.pageNum.value > 1
-            console.log(response.data.length)
             pagination.hasMore.value = response.data.length >= pagination.pageSize.value;
 
+            downloadImages(imgLinks, {}, callback)
+        })
+
+}
+
+const fetchBaiduEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value) {
+        return Promise.resolve()
+    }
+    if (!keyWord.value) {
+        keyWord.value = '表情包'
+    }
+
+    preHandle && preHandle()
+
+    const config = {
+        method: 'get',
+        url: `https://image.baidu.com/search/acjson`,
+        params: {
+            tn: "resultjson_com",
+            word: keyWord.value,
+            pn: pagination.pageNum.value * pagination.pageSize.value,
+            rn: pagination.pageSize.value
+        }
+    };
+
+    return axios(config)
+        .then(function (response) {
+            const data = response.data.data
+            const imgLinks = data.map(d => d['middleURL'])
+
+            pagination.hasLess.value = pagination.pageNum.value > 1
+            pagination.hasMore.value = data.length >= pagination.pageSize.value;
 
             downloadImages(imgLinks, {}, callback)
         })
 }
+
 
 /**
  * 初始化插件
@@ -381,6 +414,10 @@ export default function (reloadCallback) {
             if ('逗比表情包' === imageSource) {
                 return fetchDbbqbEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
+
+            if ('百度' === imageSource) {
+                return fetchBaiduEmoticons(loading, pagination, keyWord, preHandle, callback)
+            }
         } catch (e) {
             callback([])
             alert('加载出错，错误信息: ' + e)
@@ -426,5 +463,6 @@ export default function (reloadCallback) {
         previousPage,
         nextPage,
         reload,
+        config: fetchConfig(),
     }
 }

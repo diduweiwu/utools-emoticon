@@ -1,16 +1,6 @@
 <template>
-  <n-button title="查看收藏夹" @click="()=>showModal()" text type="default" :focusable="false">
-    <template #icon>
-      <svg t="1675949663912" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
-           p-id="3529" width="32" height="32">
-        <path
-            d="M937 486.087v373.908C937 897.553 906.56 928 869 928H155c-37.556 0-68-30.44-68-68.005V486.087h236.348l-32.776 191.767c-5.99 35.04 14.597 50.634 46.092 35.224l0.958-0.477L512 624.417l174.378 88.184c31.716 16.039 52.676 0.95 47.223-33.692l-0.173-1.055-32.778-191.767H937z"
-            fill="#FFB005" p-id="3530"></path>
-        <path
-            d="M512 600.562l-179.747 94.48c-16.62 8.735-27.519 0.815-24.345-17.685l34.328-200.112-145.418-141.72c-13.445-13.103-9.29-25.913 9.3-28.614l200.962-29.196 89.874-182.067c8.31-16.834 21.784-16.832 30.092 0l89.874 182.067 200.962 29.196c18.582 2.7 22.743 15.513 9.3 28.615l-145.418 141.72 34.328 200.11c3.174 18.504-7.718 26.425-24.345 17.686L512 600.562z"
-            fill="#FFD249" p-id="3531"></path>
-      </svg>
-    </template>
+  <n-button title="查看收藏夹" @click="()=>showModal()" text type="default" size="tiny" :focusable="false">
+    🌟收藏
   </n-button>
   <n-drawer v-model:show="isShow" style="height: 90%" placement="bottom" :auto-focus="false">
     <n-drawer-content :native-scrollbar="false" closable>
