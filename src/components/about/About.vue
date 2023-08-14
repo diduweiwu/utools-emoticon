@@ -19,6 +19,7 @@
                 <a href="http://www.dbbqb.com" @click="()=>openLink('http://www.dbbqb.com')">逗比表情包(注意,图源非VIP有数量限制)</a>
                 <a href="https://image.baidu.com/search/index?tn=baiduimage&word=表情包" @click="()=>openLink('https://image.baidu.com/search/index?tn=baiduimage&word=表情包')">百度搜图</a>
                 <a href="https://biaoqing233.com" @click="()=>openLink('https://biaoqing233.com')">表情233(已废弃)</a>
+                <a href="https://pic.sogou.com/pic/emo/index.jsp" @click="()=>openLink('https://pic.sogou.com/pic/emo/index.jsp')">搜狗</a>
               </n-space>
             </n-list-item>
           </n-list>
