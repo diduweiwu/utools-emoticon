@@ -31,7 +31,7 @@ export default {
             label: '搜狗',
             key: '搜狗',
             disabled: config.value['imageSource'] === '搜狗',
-            host: 'https://pic.sogou.com'
+            host: 'https://pic.sogou.com/pic/emo/index.jsp'
           },
           {
             label: '发表情',
