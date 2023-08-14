@@ -28,6 +28,52 @@ const fetchPkDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
             downloadImages(imgLinks, {}, callback)
         })
 }
+
+/**
+ * 爱斗图表情包搜索 - 发送请求搜索表情包列表
+ * @param loading
+ * @param keyWord
+ * @param preHandle
+ * @param callback
+ */
+const fetchSogouEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value) {
+        return Promise.resolve()
+    }
+
+    preHandle && preHandle()
+
+    const len = 47;
+    const start = (pagination.pageNum.value - 1) * len;
+    let params = {reqFrom: 'wap_result', start, query: keyWord.value};
+    let url = `https://pic.sogou.com/napi/wap/pic`
+    let imgExtractor = (response) => {
+        const {maxEnd, items} = response.data.data
+        pagination.hasMore.value = maxEnd >= pagination.pageNum.value * len;
+        return items.map(img => img['locImageLink'])
+    }
+
+    // 没有关键字的时候,加载热门表情包
+    if (!keyWord.value) {
+        url = `https://pic.sogou.com/napi/wap/emoji/moreEmo`
+        params = {start, len}
+
+        imgExtractor = response => {
+            const data = response.data.data
+            pagination.hasMore.value = data.length > 0
+            return data.map(img => img['cover'])
+        }
+    }
+    const config = {method: 'get', url, params};
+
+    return axios(config)
+        .then(function (response) {
+            const imgLinks = imgExtractor(response)
+            pagination.hasLess.value = pagination.pageNum.value > 1
+            downloadImages(imgLinks, {}, callback)
+        })
+}
+
 /**
  * 爱斗图表情包搜索 - 发送请求搜索表情包列表
  * @param loading
@@ -362,6 +408,8 @@ function init(keyWord, reload) {
 }
 
 export default function (reloadCallback) {
+    const loadCConfig = {isAppend: false}
+
     const emoticons = ref([])
     const keyWord = ref("")
     const loading = ref(false)
@@ -374,8 +422,12 @@ export default function (reloadCallback) {
     }))
 
     // 数据加载
-    const loadData = (pagination) => {
-        emoticons.value = []
+    const loadData = (pagination, loadCConfig = {}) => {
+        const {isAppend} = loadCConfig
+        // 不是追加模式的话,则清空图片列表
+        if (!isAppend) {
+            emoticons.value = []
+        }
 
         // 数据返回后，不断追加表情包数据
         const callback = items => {
@@ -390,6 +442,10 @@ export default function (reloadCallback) {
             const {imageSource} = fetchConfig()
             // 最长8秒后，强制结束加载请求，避免页面卡死
             setTimeout(() => callback([]), 8000)
+
+            if ("搜狗" === imageSource) {
+                return fetchSogouEmoticons(loading, pagination, keyWord, preHandle, callback)
+            }
 
             if ("爱斗图" === imageSource) {
                 return fetchAiDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
@@ -442,9 +498,9 @@ export default function (reloadCallback) {
     onMounted(() => init(keyWord, reload))
 
     // 翻页到上一页
-    const nextPage = () => {
+    const nextPage = (loadCConfig) => {
         pagination.pageNum.value++
-        loadData(pagination)
+        loadData(pagination, loadCConfig)
     }
 
     // 翻页到下一页
@@ -458,6 +514,19 @@ export default function (reloadCallback) {
         keyWord.value = ''
     })
 
+
+    // 滚动到底部的时候,加载更多数据
+    const loadMore = (e) => {
+        if (e.target instanceof HTMLDivElement) {
+            if (Math.round(e.target.scrollTop) + e.target.clientHeight >= e.target.scrollHeight) {
+                if (!loading.value && pagination.hasMore.value) {
+                    console.log('下一页')
+                    nextPage && nextPage({isAppend: true})
+                }
+            }
+        }
+    }
+
     return {
         emoticons,
         loading,
@@ -467,5 +536,6 @@ export default function (reloadCallback) {
         nextPage,
         reload,
         config: fetchConfig(),
+        loadMore,
     }
 }

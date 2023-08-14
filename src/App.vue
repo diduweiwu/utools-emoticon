@@ -6,15 +6,37 @@ import ImageStarList from "./components/ImageStarList.vue";
 import {darkTheme, useOsTheme} from "naive-ui";
 import {computed, ref} from "vue";
 import About from "./components/about/About.vue";
+import {fetchConfig} from "./js/useConfig";
 
 export default {
   components: {About, ImageStarList, ImageList, ImageSourceSwitcher},
   setup() {
     const osThemeRef = useOsTheme();
     const imageStarList = ref()
+
+    const {
+      emoticons,
+      loading,
+      pagination,
+      keyWord,
+      previousPage,
+      nextPage,
+      reload,
+      config,
+      loadMore,
+    } = useApp(() => imageStarList.value?.close())
+
     return {
       imageStarList,
-      ...useApp(() => imageStarList.value?.close()),
+      emoticons,
+      loading,
+      pagination,
+      keyWord,
+      previousPage,
+      nextPage,
+      reload,
+      config,
+      loadMore,
       ImageList,
       theme: computed(() => osThemeRef.value === "dark" ? darkTheme : null),
     }
@@ -30,10 +52,10 @@ export default {
           <n-space justify="space-between" align="center" size="small" style="height:100%;padding:0 5px">
             <n-space align="center" justify="center" size="small">
               <ImageSourceSwitcher :reload="reload" :loading="loading"/>
-                <ImageStarList ref="imageStarList"/>
-                <n-button @click.stop="()=>$refs.about.show()" :focusable="false" size="tiny" text>
-                  关于
-                </n-button>
+              <ImageStarList ref="imageStarList"/>
+              <n-button @click.stop="()=>$refs.about.show()" :focusable="false" size="tiny" text>
+                关于
+              </n-button>
             </n-space>
             <n-space align="center" size="small">
               <n-button :focusable="false" size="small" :disabled="loading||!pagination.hasLess.value" type="default"
@@ -48,7 +70,7 @@ export default {
           </n-space>
         </n-layout-header>
         <n-layout has-sider position="absolute" style="top: 50px">
-          <n-layout content-style="padding: 5px 10px;" :native-scrollbar="false">
+          <n-layout content-style="padding: 5px 10px;" :native-scrollbar="false" @scroll="loadMore">
             <n-spin :show="loading" style="min-height: 300px" description="努力加载中~">
               <ImageList :loading="loading" :emoticons="emoticons"/>
               <n-back-top :right="40"/>
