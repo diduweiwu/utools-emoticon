@@ -520,7 +520,6 @@ export default function (reloadCallback) {
         if (e.target instanceof HTMLDivElement) {
             if (Math.round(e.target.scrollTop) + e.target.clientHeight >= e.target.scrollHeight) {
                 if (!loading.value && pagination.hasMore.value) {
-                    console.log('下一页')
                     nextPage && nextPage({isAppend: true})
                 }
             }
