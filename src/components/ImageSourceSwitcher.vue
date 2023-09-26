@@ -39,12 +39,12 @@ export default {
             disabled: config.value['imageSource'] === '发表情',
             host: 'https://fabiaoqing.com'
           },
-          {
-            label: '斗图啦',
-            key: '斗图啦',
-            disabled: config.value['imageSource'] === '斗图啦',
-            host: 'https://dou.yuanmazg.com'
-          },
+          // {
+          //   label: '斗图啦',
+          //   key: '斗图啦',
+          //   disabled: config.value['imageSource'] === '斗图啦',
+          //   host: 'https://dou.yuanmazg.com'
+          // },
 
           {
             label: '斗图吧',
