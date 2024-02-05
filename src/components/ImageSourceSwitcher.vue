@@ -52,12 +52,12 @@ export default {
             disabled: config.value['imageSource'] === '斗图吧',
             host: 'https://doutub.com'
           },
-          {
-            label: '斗图王',
-            key: '斗图王',
-            disabled: config.value['imageSource'] === '斗图王',
-            host: 'https://www.doutuwang.com'
-          },
+          // {
+          //   label: '斗图王',
+          //   key: '斗图王',
+          //   disabled: config.value['imageSource'] === '斗图王',
+          //   host: 'https://www.doutuwang.com'
+          // },
           {
             label: '去斗图',
             key: '去斗图',

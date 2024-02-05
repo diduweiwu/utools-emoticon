@@ -266,8 +266,8 @@ const fetchQuDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
     let url = `http://www.godoutu.com/search/type/face/keyword/${keyWord.value}/page/${pagination.pageNum.value}.html`
     let img_matcher = '.bqppsearch'
     if (!keyWord.value) {
-        url = `http://www.godoutu.com/face/hot/page/${pagination.pageNum.value}.html`
-        img_matcher = '.tagbqppdiv img'
+        url = `http://www.godoutu.com`
+        img_matcher = '.bqppdiv img'
     }
 
     const config = {method: 'get', url};

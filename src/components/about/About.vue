@@ -12,7 +12,7 @@
               <n-space justify="center">
                 <a href="https://fabiaoqing.com" @click="()=>openLink('https://fabiaoqing.com')">发表情</a>
                 <a href="https://doutub.com" @click="()=>openLink('https://doutub.com')">斗图吧</a>
-                <a href="https://www.doutuwang.com" @click="()=>openLink('https://www.doutuwang.com')">斗图王</a>
+                <a href="https://www.doutuwang.com" @click="()=>openLink('https://www.doutuwang.com')">斗图王(失效)</a>
                 <a href="http://www.godoutu.com" @click="()=>openLink('http://www.godoutu.com')">去斗图</a>
                 <a href="http://www.adoutu.com" @click="()=>openLink('http://www.adoutu.com')">爱斗图</a>
                 <a href="http://www.dbbqb.com" @click="()=>openLink('http://www.dbbqb.com')">逗比表情包(注意,图源非VIP有数量限制)</a>

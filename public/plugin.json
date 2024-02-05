@@ -1,6 +1,6 @@
 {
   "development": {
-    "main": "http://127.0.0.1:5173/",
+    "main": "http://localhost:5173/",
     "preload": "preload.js"
   },
   "main": "index.html",
