@@ -28,7 +28,7 @@ export default {
     const imageSources = computed(
         () => [
           {
-            label: '搜狗',
+            label: '搜狗表情',
             key: '搜狗',
             disabled: config.value['imageSource'] === '搜狗',
             host: 'https://pic.sogou.com/pic/emo/index.jsp'

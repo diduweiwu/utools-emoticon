@@ -45,7 +45,7 @@ const fetchSogouEmoticons = (loading, pagination, keyWord, preHandle, callback) 
 
     const len = 47;
     const start = (pagination.pageNum.value - 1) * len;
-    let params = {reqFrom: 'wap_result', start, query: keyWord.value};
+    let params = {reqFrom: 'wap_result', start, query: `${keyWord.value} 表情`};
     let url = `https://pic.sogou.com/napi/wap/pic`
     let imgExtractor = (response) => {
         const {maxEnd, items} = response.data.data
