@@ -109,6 +109,37 @@ const fetchAiDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback
         })
 }
 
+const fetchDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) => {
+    if (loading.value) {
+        return Promise.resolve()
+    }
+    preHandle && preHandle()
+
+    const pageSize = 20
+    let params = {type: 1, pageNum: pagination.pageNum.value, pageSize, keyword: keyWord.value};
+    let url = `https://doutu.lccyy.com/doutu/items`
+
+    // 没有关键字的时候,加载热门表情包
+    if (!keyWord.value) {
+        url = `https://doutu.lccyy.com/doutu/all`
+        params = {ac:'home',start:0,limit:30,keyword: ''}
+    }
+    const config = {method: 'get', url, params};
+
+    return axios(config)
+        .then(function (response) {
+            let imgLinks = []
+            const {items, totalSize} = response.data
+            if (!!items) {
+                imgLinks = items.map(item => item['url'])
+            }
+
+            pagination.hasLess.value = pagination.pageNum.value > 1
+            pagination.hasMore.value = (pagination.pageNum.value * pageSize) < totalSize;
+            downloadImages(imgLinks, {}, callback)
+        })
+}
+
 /**
  * 斗图啦表情包搜索
  * @param loading
@@ -464,6 +495,10 @@ export default function (reloadCallback) {
 
             if ('斗图王' === imageSource) {
                 return fetchDouTuWangEmoticons(loading, pagination, keyWord, preHandle, callback)
+            }
+
+            if ("斗图" === imageSource) {
+                return fetchDouTuEmoticons(loading, pagination, keyWord, preHandle, callback)
             }
 
             if ('去斗图' === imageSource) {

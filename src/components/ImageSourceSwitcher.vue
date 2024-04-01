@@ -1,7 +1,7 @@
 <template>
   <n-space justify="start" align="center" :size="[2,2]">
     <template v-for="source in imageSources">
-      <n-tag checkable :checked="config['imageSource']===source['key']"
+      <n-tag checkable :checked="config['imageSource']===source['key']" size="medium"
              @click="()=>switchImageSource(source['key'])" @click.middle="()=>openLink(source['host'])">
         {{ source['label'] }}
       </n-tag>
@@ -58,6 +58,12 @@ export default {
           //   disabled: config.value['imageSource'] === '斗图王',
           //   host: 'https://www.doutuwang.com'
           // },
+          {
+            label: '斗图',
+            key: '斗图',
+            disabled: config.value['imageSource'] === '去斗图',
+            host: 'https://doutu.lccyy.com/static/view.html'
+          },
           {
             label: '去斗图',
             key: '去斗图',
