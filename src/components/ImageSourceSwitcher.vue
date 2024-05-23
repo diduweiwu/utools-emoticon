@@ -58,12 +58,12 @@ export default {
           //   disabled: config.value['imageSource'] === '斗图王',
           //   host: 'https://www.doutuwang.com'
           // },
-          {
-            label: '斗图',
-            key: '斗图',
-            disabled: config.value['imageSource'] === '去斗图',
-            host: 'https://doutu.lccyy.com/static/view.html'
-          },
+          // {
+          //   label: '斗图',
+          //   key: '斗图',
+          //   disabled: config.value['imageSource'] === '去斗图',
+          //   host: 'https://doutu.lccyy.com/static/view.html'
+          // },
           {
             label: '去斗图',
             key: '去斗图',

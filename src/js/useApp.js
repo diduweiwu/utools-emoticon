@@ -122,9 +122,14 @@ const fetchDouTuEmoticons = (loading, pagination, keyWord, preHandle, callback) 
     // 没有关键字的时候,加载热门表情包
     if (!keyWord.value) {
         url = `https://doutu.lccyy.com/doutu/all`
-        params = {ac:'home',start:0,limit:30,keyword: ''}
+        params = {ac: 'home', start: 0, limit: 30, keyword: ''}
     }
-    const config = {method: 'get', url, params};
+    const config = {
+        method: 'get', url, params,
+        headers: {
+            "User-Agent": "Nice"
+        }
+    };
 
     return axios(config)
         .then(function (response) {
