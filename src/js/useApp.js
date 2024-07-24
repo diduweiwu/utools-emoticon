@@ -419,7 +419,6 @@ const fetchBaiduEmoticons = (loading, pagination, keyWord, preHandle, callback) 
         })
 }
 
-
 /**
  * 初始化插件
  */
@@ -444,8 +443,6 @@ function init(keyWord, reload) {
 }
 
 export default function (reloadCallback) {
-    const loadCConfig = {isAppend: false}
-
     const emoticons = ref([])
     const keyWord = ref("")
     const loading = ref(false)

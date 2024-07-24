@@ -1,5 +1,5 @@
 <template>
-  <n-space justify="start" align="center" :size="[2,2]">
+  <n-space justify="start" align="center" :size="[10,10]">
     <template v-for="source in imageSources">
       <n-tag checkable :checked="config['imageSource']===source['key']" size="medium"
              @click="()=>switchImageSource(source['key'])" @click.middle="()=>openLink(source['host'])">
@@ -33,12 +33,12 @@ export default {
             disabled: config.value['imageSource'] === '搜狗',
             host: 'https://pic.sogou.com/pic/emo/index.jsp'
           },
-          {
-            label: '发表情',
-            key: '发表情',
-            disabled: config.value['imageSource'] === '发表情',
-            host: 'https://fabiaoqing.com'
-          },
+          // {
+          //   label: '发表情',
+          //   key: '发表情',
+          //   disabled: config.value['imageSource'] === '发表情',
+          //   host: 'https://fabiaoqing.com'
+          // },
           // {
           //   label: '斗图啦',
           //   key: '斗图啦',
@@ -64,12 +64,12 @@ export default {
           //   disabled: config.value['imageSource'] === '去斗图',
           //   host: 'https://doutu.lccyy.com/static/view.html'
           // },
-          {
-            label: '去斗图',
-            key: '去斗图',
-            disabled: config.value['imageSource'] === '去斗图',
-            host: 'http://www.godoutu.com'
-          },
+          // {
+          //   label: '去斗图',
+          //   key: '去斗图',
+          //   disabled: config.value['imageSource'] === '去斗图',
+          //   host: 'http://www.godoutu.com'
+          // },
           {
             label: '爱斗图',
             key: '爱斗图',

@@ -16,23 +16,22 @@
             <n-list-item>源码地址: <a :href="sourceLink" @click="()=>openLink(sourceLink)">{{ sourceLink }}</a>
             </n-list-item>
             <n-list-item>真心感谢以下表情包数据源,该插件开源免费,无任何商业属性,若有侵权请联系作者删除～</n-list-item>
-            <n-list-item>
-              <n-space justify="center">
-                <a href="https://fabiaoqing.com" @click="()=>openLink('https://fabiaoqing.com')">发表情</a>
-                <a href="https://doutub.com" @click="()=>openLink('https://doutub.com')">斗图吧</a>
-                <a href="https://www.doutuwang.com" @click="()=>openLink('https://www.doutuwang.com')">斗图王(失效)</a>
-                <a href="http://www.godoutu.com" @click="()=>openLink('http://www.godoutu.com')">去斗图</a>
-                <a href="http://www.adoutu.com" @click="()=>openLink('http://www.adoutu.com')">爱斗图</a>
-                <a href="http://www.dbbqb.com"
-                   @click="()=>openLink('http://www.dbbqb.com')">逗比表情包(注意,图源非VIP有数量限制)</a>
-                <a href="https://image.baidu.com/search/index?tn=baiduimage&word=表情包"
-                   @click="()=>openLink('https://image.baidu.com/search/index?tn=baiduimage&word=表情包')">百度搜图</a>
-                <a href="https://pic.sogou.com/pic/emo/index.jsp"
-                   @click="()=>openLink('https://pic.sogou.com/pic/emo/index.jsp')">搜狗</a>
-                <a href="https://doutu.lccyy.com/" @click="()=>openLink('https://doutu.lccyy.com/')">斗图在线</a>
-              </n-space>
-            </n-list-item>
           </n-list>
+          <n-space justify="center" >
+            <a href="https://fabiaoqing.com" @click="()=>openLink('https://fabiaoqing.com')">发表情(失效)</a>
+            <a href="https://doutub.com" @click="()=>openLink('https://doutub.com')">斗图吧</a>
+            <a href="https://www.doutuwang.com" @click="()=>openLink('https://www.doutuwang.com')">斗图王(失效)</a>
+            <a href="http://www.godoutu.com" @click="()=>openLink('http://www.godoutu.com')">去斗图(失效)</a>
+            <a href="http://www.adoutu.com" @click="()=>openLink('http://www.adoutu.com')">爱斗图</a>
+            <a href="http://www.dbbqb.com"
+               @click="()=>openLink('http://www.dbbqb.com')">逗比表情包(注意,图源非VIP有数量限制)</a>
+            <a href="https://image.baidu.com/search/index?tn=baiduimage&word=表情包"
+               @click="()=>openLink('https://image.baidu.com/search/index?tn=baiduimage&word=表情包')">百度搜图</a>
+            <a href="https://pic.sogou.com/pic/emo/index.jsp"
+               @click="()=>openLink('https://pic.sogou.com/pic/emo/index.jsp')">搜狗</a>
+            <a href="https://doutu.lccyy.com/"
+               @click="()=>openLink('https://doutu.lccyy.com/')">斗图在线(utools用户被封)</a>
+          </n-space>
         </template>
       </n-result>
     </n-drawer-content>

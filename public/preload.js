@@ -114,6 +114,10 @@ const fetchHostMap = (host) => {
     if (host === 'img.soutula.com') {
         return 'https://fabiaoqing.com/'
     }
+
+    if (host === 'img.adoutu.com') {
+        return 'https://www.adoutu.com/'
+    }
     return host
 }
 
