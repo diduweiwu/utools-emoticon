@@ -82,8 +82,8 @@ window.composeCollectedFilePath = (url) => window.composeFilePath(url, {download
 window.composeFilePath = (url, config = {}) => {
     // 文件名采用随机方式，避免文件冲突
     let fileName = `${crypto.createHash('md5').update(url).digest('hex')}`
-    // 非gif类型，统一处理为jpg格式
-    let fileSuffix = (path.extname(url) === '.gif') ? '.gif' : '.jpg'
+    // 所有静态和动态类型图片，都统一使用gif格式,避免发出去的表情包不动
+    let fileSuffix = '.gif'
     // 组装文件路径,需要将文件后缀拼接上/未指定下载目录，使用temp目录
     return `${config['downloadPath'] || utools.getPath("temp")}/${fileName}${fileSuffix}`
 }

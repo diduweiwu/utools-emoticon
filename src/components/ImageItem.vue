@@ -1,5 +1,9 @@
 <template>
-  <img class="carousel-img" :src="em['fileSrc']" @click="()=>copy(em)" @click.right="()=>switchCollectedStatus(em)">
+  <img class="carousel-img" :src="em['fileSrc']"
+       @click.exact="()=>copy(em)"
+       @click.alt.exact="()=>openLocal(em)"
+       @click.shift.exact="()=>openRemote(em)"
+       @click.right.exact="()=>switchCollectedStatus(em)">
 </template>
 
 <script>
@@ -21,6 +25,8 @@ export default {
     return {
       switchCollectedStatus,
       copy: (em) => window.copyImage(em, () => success('复制成功~')),
+      openLocal: (em) => window.openLink(em.fileSrc),
+      openRemote: (em) => window.openLink(em.imgSrc),
     }
   }
 }

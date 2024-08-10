@@ -1,7 +1,7 @@
 <template>
   <n-space justify="start" align="center" :size="[10,10]">
     <template v-for="source in imageSources">
-      <n-tag checkable :checked="config['imageSource']===source['key']" size="medium"
+      <n-tag round checkable :checked="config['imageSource']===source['key']" size="medium"
              @click="()=>switchImageSource(source['key'])" @click.middle="()=>openLink(source['host'])">
         {{ source['label'] }}
       </n-tag>
@@ -33,18 +33,18 @@ export default {
             disabled: config.value['imageSource'] === '搜狗',
             host: 'https://pic.sogou.com/pic/emo/index.jsp'
           },
-          // {
-          //   label: '发表情',
-          //   key: '发表情',
-          //   disabled: config.value['imageSource'] === '发表情',
-          //   host: 'https://fabiaoqing.com'
-          // },
-          // {
-          //   label: '斗图啦',
-          //   key: '斗图啦',
-          //   disabled: config.value['imageSource'] === '斗图啦',
-          //   host: 'https://dou.yuanmazg.com'
-          // },
+          {
+            label: '发表情',
+            key: '发表情',
+            disabled: config.value['imageSource'] === '发表情',
+            host: 'https://fabiaoqing.com'
+          },
+          {
+            label: '斗图啦',
+            key: '斗图啦',
+            disabled: config.value['imageSource'] === '斗图啦',
+            host: 'https://www.doutupk.com'
+          },
 
           {
             label: '斗图吧',
@@ -76,12 +76,12 @@ export default {
             disabled: config.value['imageSource'] === '爱斗图',
             host: 'http://www.adoutu.com'
           },
-          {
-            label: '逗比表情包',
-            key: '逗比表情包',
-            disabled: config.value['imageSource'] === '逗比表情包',
-            host: 'https://www.dbbqb.com'
-          },
+          // {
+          //   label: '逗比表情包',
+          //   key: '逗比表情包',
+          //   disabled: config.value['imageSource'] === '逗比表情包',
+          //   host: 'https://www.dbbqb.com'
+          // },
           {
             label: '百度',
             key: '百度',

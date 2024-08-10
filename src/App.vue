@@ -25,6 +25,17 @@ export default {
       loadMore,
     } = useApp(() => imageStarList.value?.close())
 
+
+    /**
+     * js 文件下使用这个做类型提示
+     * @type import('naive-ui').GlobalThemeOverrides
+     */
+    const themeOverrides = {
+      common: {
+        primaryColor: 'rgba(73,76,184,0.7)'
+      },
+    }
+
     return {
       imageStarList,
       emoticons,
@@ -38,13 +49,14 @@ export default {
       loadMore,
       ImageList,
       theme: computed(() => osThemeRef.value === "dark" ? darkTheme : null),
+      themeOverrides,
     }
   }
 }
 </script>
 
 <template>
-  <n-config-provider :theme="theme">
+  <n-config-provider :theme="theme" :theme-overrides="themeOverrides">
     <n-message-provider placement="top" container-style="margin-top:40px" :duration="1500">
       <n-layout position="absolute">
         <n-layout-header style="height: 45px;" bordered>

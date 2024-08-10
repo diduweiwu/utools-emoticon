@@ -162,9 +162,10 @@ const fetchDouTulaEmoticons = (loading, pagination, keyWord, preHandle, callback
 
     // 没有关键字的时候,加载最新表情包
     let params = {page: pagination.pageNum.value, keyword: keyWord.value};
-    let url = 'https://dou.yuanmazg.com/so'
+    let url = 'https://www.doutupk.com/search?type=photo&more=1'
     if (!keyWord.value) {
-        url = 'https://dou.yuanmazg.com/doutu'
+        url = 'https://www.doutupk.com/article/list'
+        params = {page: pagination.pageNum.value}
     }
 
     const config = {method: 'get', url, params};
@@ -172,7 +173,7 @@ const fetchDouTulaEmoticons = (loading, pagination, keyWord, preHandle, callback
     return axios(config)
         .then(function (response) {
             const $ = cheerio.load(response.data)
-            const imgLinks = $('.page-content img').map((_, img) => `https://dou.yuanmazg.com/${img.attribs['data-original']}`)
+            const imgLinks = $('.image_dtb,.image_dta').map((_, img) => `${img.attribs['data-original']}`)
 
             pagination.hasLess.value = pagination.pageNum.value > 1
             pagination.hasMore.value = $('.pagination .disabled:contains("»")').length === 0;
@@ -424,7 +425,7 @@ const fetchBaiduEmoticons = (loading, pagination, keyWord, preHandle, callback) 
  */
 function init(keyWord, reload) {
     utools.onPluginEnter(({type, payload}) => {
-        utools.setSubInput(({text}) => keyWord.value = text, "回车搜索表情包,鼠标左击复制图片,鼠标中击查看大图,鼠标右击加入收藏～");
+        utools.setSubInput(({text}) => keyWord.value = text, "鼠标操作:回车搜索左击复制图片,中击查看大图,右击加入收藏～");
         if (type === 'over') {
             utools.setSubInputValue(payload)
             keyWord.value = payload
