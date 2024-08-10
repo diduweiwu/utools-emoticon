@@ -76,12 +76,12 @@ export default {
             disabled: config.value['imageSource'] === '爱斗图',
             host: 'http://www.adoutu.com'
           },
-          // {
-          //   label: '逗比表情包',
-          //   key: '逗比表情包',
-          //   disabled: config.value['imageSource'] === '逗比表情包',
-          //   host: 'https://www.dbbqb.com'
-          // },
+          {
+            label: '逗比表情包',
+            key: '逗比表情包',
+            disabled: config.value['imageSource'] === '逗比表情包',
+            host: 'https://www.dbbqb.com'
+          },
           {
             label: '百度',
             key: '百度',

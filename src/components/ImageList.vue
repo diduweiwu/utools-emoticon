@@ -4,7 +4,8 @@
       <template v-for="(em,index) in emoticons">
         <div class="emoji-pic"
              :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'1px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'1px',borderStyle:'solid',borderColor:'lightgray'}}">
-          <image-item :title="em.imgSrc" :em="em" @click.middle="()=>$refs.imageCarousel.show(emoticons,index)" :src="em.fileSrc"
+          <image-item :title="em.imgSrc" :em="em" @click.middle="()=>$refs.imageCarousel.show(emoticons,index)"
+                      :emoticons="emoticons" :src="em.fileSrc"
                       style="width:100%;height:100%"/>
         </div>
       </template>
