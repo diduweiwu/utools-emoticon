@@ -47,9 +47,10 @@ export default {
 
       // 表情包存在,进行取消
       const removeTask = removeTaskMap[em.imgSrc]
+      // 正在等待删除中，取消删除
       if (!!removeTask) {
         clearTimeout(removeTask)
-        info("已取消删除任务")
+        info("已取消删除")
         return
       }
 
