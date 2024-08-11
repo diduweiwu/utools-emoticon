@@ -5,7 +5,16 @@
         <template #footer>
           <n-list show-divider clickable hoverable>
             <n-list-item>
-              本插件所有功能 <strong style="color: red">永久</strong> 免费,利用加完班的业余时间开发,欢迎大家使用和反馈,觉得好用欢迎点赞或打赏~
+              <div>声明:</div>
+              <div>
+                本插件所有功能<strong style="color: red">永久</strong> 免费,利用加完班的业余时间开发,欢迎大家使用和反馈,觉得好用欢迎点赞或打赏~
+              </div>
+              <div>
+                所有数据来自互联网，本插件不存储任何原始数据；
+              </div>
+              <div>
+                请遵守法律法规，请勿用于任何违法行为，用户的一切行为与作者无关。
+              </div>
             </n-list-item>
             <n-list-item>
               <strong>新增快捷键操作: 按住shift单击打开远程图片,按住Alt/Option打开本地图片</strong>
@@ -35,6 +44,8 @@
                @click="()=>openLink('https://pic.sogou.com/pic/emo/index.jsp')">搜狗</a>
             <a href="https://doutu.lccyy.com/"
                @click="()=>openLink('https://doutu.lccyy.com/')">斗图在线(utools用户被封)</a>
+            <a href="https://www.dogetu.com"
+               @click="()=>openLink('https://www.dogetu.com')">斗了个图</a>
           </n-space>
         </template>
       </n-result>

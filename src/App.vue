@@ -77,7 +77,6 @@ export default {
                         @click="nextPage">下一页
               </n-button>
             </n-space>
-
           </n-space>
         </n-layout-header>
         <n-layout has-sider position="absolute" style="top: 50px">

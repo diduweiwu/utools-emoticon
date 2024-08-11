@@ -6,13 +6,21 @@ export async function downloadImages(imgLinks, config = {}, callback) {
         return
     }
     let promises = []
-    for (let i = 0; i < imgLinks.length; i++) {
+
+    const downloadImageLinks = imgLinks.sort((v1, v2) => v1.localeCompare(v2))
+
+    for (let i = 0; i < downloadImageLinks.length; i++) {
         promises.push(window.downloadImage(imgLinks[i], config))
 
         // 批量下载，一次3个
-        if ((i === imgLinks.length - 1) || (i > 0 && i % 3 === 0)) {
+        if ((i === imgLinks.length - 1) || (i > 0 && i % 5 === 0)) {
             Promise.all(promises.map(p => p.catch(err => Promise.resolve(null)))).then(values => {
-                callback && callback(values.filter(v => !!v))
+                // [{imgSrc:'',fileSrc:''}]
+                const callbackValues = values
+                    .filter(v => !!v)
+                    .sort((v1, v2) => v1.imgSrc.localeCompare(v2.imgSrc))
+
+                callback && callback(callbackValues)
             })
 
             promises = []

@@ -1,5 +1,5 @@
 <template>
-  <n-space justify="start" align="center" :size="[10,10]">
+  <n-space justify="start" align="center" :size="[3,10]">
     <template v-for="source in imageSources">
       <n-tag round checkable :checked="config['imageSource']===source['key']" size="medium"
              @click="()=>switchImageSource(source['key'])" @click.middle="()=>openLink(source['host'])">
@@ -28,7 +28,7 @@ export default {
     const imageSources = computed(
         () => [
           {
-            label: '搜狗表情',
+            label: '搜狗',
             key: '搜狗',
             disabled: config.value['imageSource'] === '搜狗',
             host: 'https://pic.sogou.com/pic/emo/index.jsp'
@@ -87,6 +87,12 @@ export default {
             key: '百度',
             disabled: config.value['imageSource'] === '百度',
             host: 'https://image.baidu.com'
+          },
+          {
+            label: '斗了个图',
+            key: '斗了个图',
+            disabled: config.value['imageSource'] === '斗了个图',
+            host: 'https://www.dogetu.com'
           },
         ]
     )
