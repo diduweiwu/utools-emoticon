@@ -64,5 +64,6 @@ export default function () {
         checkIfCollected,
         switchCollectedStatus,
         starEmojiList,
+        downloadCollectedImages,
     }
 }

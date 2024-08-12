@@ -51,6 +51,7 @@ export default {
       if (!!removeTask) {
         clearTimeout(removeTask)
         info("已取消删除")
+        delete removeTaskMap[em.imgSrc]
         return
       }
 

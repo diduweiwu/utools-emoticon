@@ -33,12 +33,17 @@ export default {
   setup() {
     const isShow = ref(false)
 
-    const {starEmojiList} = useImageStarList()
+    const {starEmojiList, downloadCollectedImages} = useImageStarList()
+
+    const showModal = () => {
+      isShow.value = true
+      downloadCollectedImages(starEmojiList.value.map(item=>item['imgSrc']))
+    }
 
     return {
       isShow,
       starEmojiList,
-      showModal: () => isShow.value = true,
+      showModal,
       close: () => isShow.value = false,
       ImageList,
       openCollectionPath: () => utools.shellOpenPath(checkOrCreateCollectedDirectory())

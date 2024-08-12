@@ -83,7 +83,7 @@ window.composeFilePath = (url, config = {}) => {
     // 文件名采用随机方式，避免文件冲突
     let fileName = `${crypto.createHash('md5').update(url).digest('hex')}`
     // 所有静态和动态类型图片，都统一使用gif格式,避免发出去的表情包不动
-    let fileSuffix = '.gif'
+    let fileSuffix = config['fileSuffix'] || '.gif'
     // 组装文件路径,需要将文件后缀拼接上/未指定下载目录，使用temp目录
     return `${config['downloadPath'] || utools.getPath("temp")}/${fileName}${fileSuffix}`
 }
@@ -133,6 +133,18 @@ window.downloadImage = async (url, config = {}) => {
 
     // 组装文件路径,需要将文件后缀拼接上
     const filePath = composeFilePath(url, config)
+    // 旧表情包
+    const checkFilePath = composeFilePath(url, Object.assign(config, {fileSuffix: '.jpg'}))
+
+    if (!fs.existsSync(filePath) && fs.existsSync(checkFilePath)) {
+        // 历史表情包存在,直接复制成新的路径
+        fs.cpSync(checkFilePath, filePath)
+        return {
+            imgSrc: url, fileSrc: `file://${checkFilePath}`,
+        }
+    }
+
+
     if (!fs.existsSync(filePath)) {
         await downloadRemoteFile(url, filePath, config)
     }
@@ -149,8 +161,7 @@ window.downloadImage = async (url, config = {}) => {
     }
 
     return {
-        imgSrc: url,
-        fileSrc: `file://${filePath}`,
+        imgSrc: url, fileSrc: `file://${filePath}`,
     }
 }
 

@@ -31,9 +31,6 @@ export default {
      * @type import('naive-ui').GlobalThemeOverrides
      */
     const themeOverrides = {
-      common: {
-        primaryColor: 'rgba(73,76,184,0.7)'
-      },
     }
 
     return {
