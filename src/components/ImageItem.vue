@@ -1,6 +1,7 @@
 <template>
   <img class="carousel-img" :src="em['fileSrc']"
-       @click.exact="()=>copy(em)"
+       v-on:click.exact="()=>handleCopy(em)"
+       v-on:dblclick.exact="()=>handlePaste(em)"
        @click.alt.exact="()=>openLocal(em)"
        @click.shift.exact="()=>openRemote(em)"
        @click.right.exact="()=>saveOrRemove(em)">
@@ -59,11 +60,35 @@ export default {
       removeTaskMap[em.imgSrc] = setTimeout(() => switchCollectedStatus(em), 10000)
     }
 
+    let timer = null
+    // 单击图片进行复制
+    const handleCopy = (em) => {
+      if (timer) {
+        clearTimeout(timer)
+      }
+      // 设置延时器 超过300ms为单击 300ms内点击则为双击事件
+      timer = setTimeout(() => {
+        // 需要执行的逻辑代码 执行复制操作,400毫秒之内没有再次点击,就执行,如果400毫秒之内再次点击,则设定为粘贴操作...
+        window.copyImage(em, () => success('复制成功~'))
+      }, 400)
+    }
+
+    // 双击图片进行复制和粘贴(这是一个动作,utools框架会先复制再进行粘贴,无法拆分)
+    const handlePaste = (em) => {
+      if (timer) {
+        // 清除延时器
+        clearTimeout(timer)
+      }
+      // 需要执行的逻辑代码,粘贴路径的时候,不能加 file:// 这个前缀...
+      utools.hideMainWindowPasteFile(em['fileSrc'].replace("file://", ""))
+    }
+
     return {
       saveOrRemove,
-      copy: (em) => window.copyImage(em, () => success('复制成功~')),
       openLocal: (em) => window.openLink(em.fileSrc),
       openRemote: (em) => window.openLink(em.imgSrc),
+      handleCopy,
+      handlePaste,
     }
   }
 }
