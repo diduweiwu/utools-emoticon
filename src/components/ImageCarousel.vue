@@ -7,7 +7,7 @@
           <n-carousel-item style="width: 80%">
             <ImageItem class="carousel-img" :em="image" style="background-color: white"
                        :style="{...checkIfCollected(image.imgSrc)?{borderWidth:'2px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'2px',borderStyle:'solid',borderColor:'white'}}"
-              />
+            />
           </n-carousel-item>
         </template>
       </n-carousel>
@@ -19,6 +19,7 @@
 import {ref} from "vue";
 import ImageItem from "./ImageItem.vue";
 import useImageStarList from "../js/useImageStarList.js";
+import {loadSettings} from "./setting/useSettings";
 
 export default {
   name: "ImageCarousel",
@@ -27,14 +28,20 @@ export default {
     const isShow = ref(false)
     const images = ref([])
     const currentIndex = ref(0)
-    const { checkIfCollected,} = useImageStarList()
+    const {checkIfCollected,} = useImageStarList()
 
     return {
       isShow,
-      show: (_images, _currentIndex = 0) => {
-        images.value = _images
-        currentIndex.value = _currentIndex
-        isShow.value = true
+      show: (event, _images, _currentIndex = 0) => {
+        // 按住中键的时候是否需要shift
+        const {middleWithShift} = loadSettings()
+
+        // 使用shift搭配/或者已经按下了shift
+        if (!middleWithShift || (middleWithShift && event.shiftKey)) {
+          images.value = _images
+          currentIndex.value = _currentIndex
+          isShow.value = true
+        }
       },
       images,
       currentIndex,

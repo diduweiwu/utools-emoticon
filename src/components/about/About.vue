@@ -1,6 +1,7 @@
 <template>
   <n-drawer v-model:show="isShow" style="height: 90%" placement="bottom">
     <n-drawer-content>
+      <settings/>
       <n-result status="404" title="这里只是一个兴趣使然的开发者" description="生活总归需要点乐趣">
         <template #footer>
           <n-list show-divider clickable hoverable>
@@ -56,9 +57,11 @@
 
 <script>
 import {ref} from "vue";
+import Settings from "../setting/Settings.vue";
 
 export default {
   name: "About",
+  components: {Settings},
   setup() {
     const isShow = ref(false)
     const sourceLink = "https://github.com/diduweiwu/utools-emoticon"

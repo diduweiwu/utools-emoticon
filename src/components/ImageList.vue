@@ -5,7 +5,7 @@
         <div class="emoji-pic"
              :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'1px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'1px',borderStyle:'solid',borderColor:'lightgray'}}">
           <image-item title="按住shift点击可以打开远程图片" :em="em"
-                      @click.middle="()=>$refs.imageCarousel.show(emoticons,index)"
+                      @click.middle="(event)=>$refs.imageCarousel.show(event,emoticons,index)"
                       :emoticons="emoticons" :src="em.fileSrc"
                       style="width:100%;height:100%"/>
         </div>

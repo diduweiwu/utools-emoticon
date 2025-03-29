@@ -23,6 +23,10 @@ import {
     NSpace,
     NSpin,
     NText,
+    NCheckbox,
+    NForm,
+    NFormItem,
+    NPopover,
 } from 'naive-ui'
 
 const naive = create({
@@ -47,6 +51,10 @@ const naive = create({
         NText,
         NSpace,
         NSpin,
+        NCheckbox,
+        NForm,
+        NFormItem,
+        NPopover,
     ]
 })
 createApp(App).use(naive).mount('#app')
