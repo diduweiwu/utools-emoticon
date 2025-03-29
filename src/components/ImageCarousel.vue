@@ -20,6 +20,7 @@ import {ref} from "vue";
 import ImageItem from "./ImageItem.vue";
 import useImageStarList from "../js/useImageStarList.js";
 import {loadSettings} from "./setting/useSettings";
+import {useMessage} from "naive-ui";
 
 export default {
   name: "ImageCarousel",
@@ -29,12 +30,16 @@ export default {
     const images = ref([])
     const currentIndex = ref(0)
     const {checkIfCollected,} = useImageStarList()
-
+    const message = useMessage()
     return {
       isShow,
       show: (event, _images, _currentIndex = 0) => {
         // 按住中键的时候是否需要shift
         const {middleWithShift} = loadSettings()
+        if (middleWithShift && !event.shiftKey) {
+          message.info("记得按住shift噢")
+          return
+        }
 
         // 使用shift搭配/或者已经按下了shift
         if (!middleWithShift || (middleWithShift && event.shiftKey)) {
