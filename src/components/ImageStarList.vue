@@ -1,5 +1,5 @@
 <template>
-  <n-button title="查看收藏夹" @click="()=>showModal()" text type="default" size="tiny" :focusable="false">
+  <n-button title="查看收藏夹" @click="()=>showModal()" text type="default" size="medium" :focusable="false">
     🌟收藏
   </n-button>
   <n-drawer v-model:show="isShow" style="height: 90%" placement="bottom" :auto-focus="false">
@@ -24,7 +24,8 @@
 
 <script>
 import {ref} from "vue";
-import useImageStarList from "../js/useImageStarList.js";
+import useImageStarList from "../composables/useImageStarList.js";
+import {collectedDirectory, openPath} from "../platform/index.js";
 import ImageList from "./ImageList.vue";
 
 export default {
@@ -37,7 +38,8 @@ export default {
 
     const showModal = () => {
       isShow.value = true
-      downloadCollectedImages(starEmojiList.value.map(item=>item['imgSrc']))
+      // 打开收藏夹时重新下载缺失的本地文件
+      downloadCollectedImages(starEmojiList.value.map(item => item['imgSrc']))
     }
 
     return {
@@ -46,7 +48,7 @@ export default {
       showModal,
       close: () => isShow.value = false,
       ImageList,
-      openCollectionPath: () => utools.shellOpenPath(checkOrCreateCollectedDirectory())
+      openCollectionPath: () => openPath(collectedDirectory()),
     }
   }
 }

@@ -1,20 +1,26 @@
 {
-  "development": {
-    "main": "http://localhost:5173/",
-    "preload": "preload.js"
-  },
+  "pluginName": "斗图表情包",
+  "name": "doutu",
+  "title": "斗图表情包",
+  "description": "在线搜索表情包图片，助你高效斗图",
+  "author": "被时间思牵",
+  "version": "1.0.0",
   "main": "index.html",
-  "preload": "preload.js",
+  "preload": "preload/services.js",
   "logo": "logo.png",
+  "development": {
+    "main": "http://localhost:5173",
+    "preload": "preload/services.js"
+  },
   "features": [
     {
-      "code": "斗图",
-      "explain": "来斗图吧",
+      "code": "doutu",
+      "explain": "表情包搜索:回车搜索,左击复制图片,中击查看大图,右击加入收藏",
+      "icon": "logo.png",
       "cmds": [
-        "emoji",
+        "doutu",
         "斗图",
         "表情",
-        "表情包",
         {
           "type": "over",
           "label": "斗图啦",
@@ -23,5 +29,10 @@
         }
       ]
     }
+  ],
+  "platform": [
+    "darwin",
+    "win32",
+    "linux"
   ]
 }

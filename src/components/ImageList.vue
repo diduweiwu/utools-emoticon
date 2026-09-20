@@ -1,16 +1,14 @@
 <template>
   <div v-if="emoticons&&emoticons.length">
-    <n-space justify="start">
-      <template v-for="(em,index) in emoticons">
-        <div class="emoji-pic"
-             :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'1px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'1px',borderStyle:'solid',borderColor:'lightgray'}}">
-          <image-item title="按住shift点击可以打开远程图片" :em="em"
-                      @click.middle="(event)=>$refs.imageCarousel.show(event,emoticons,index)"
-                      :emoticons="emoticons" :src="em.fileSrc"
-                      style="width:100%;height:100%"/>
-        </div>
-      </template>
-    </n-space>
+    <div class="emoji-grid" :style="{'--emoji-size': `${width}px`}">
+      <div v-for="(em,index) in emoticons" :key="index" class="emoji-pic"
+           :style="{width:`${width}px`,height:`${height}px`,...checkIfCollected(em.imgSrc)?{borderWidth:'1px',borderStyle:'solid',borderColor:'orange'}:{borderWidth:'1px',borderStyle:'solid',borderColor:'lightgray'}}">
+        <image-item title="按住shift点击可以打开远程图片" :em="em"
+                    @click.middle="(event)=>$refs.imageCarousel.show(event,emoticons,index)"
+                    :emoticons="emoticons" :src="em.fileSrc"
+                    style="width:100%;height:100%"/>
+      </div>
+    </div>
   </div>
   <div v-else>
     <n-empty v-if="!loading" size="huge">
@@ -32,7 +30,7 @@
 </template>
 
 <script>
-import useImageStarList from "../js/useImageStarList.js";
+import useImageStarList from "../composables/useImageStarList.js";
 import {toRefs} from "vue";
 import ImageCarousel from "./ImageCarousel.vue";
 import ImageItem from "./ImageItem.vue";
@@ -60,6 +58,18 @@ export default {
 </script>
 
 <style scoped>
+/*
+ * 响应式网格:列数由容器宽度自动决定(auto-fill 固定列宽),伸缩宽度时多余空间
+ * 均匀分配到「图片之间 + 列表左右两侧」(space-evenly),左右留白与图片间隔一致;
+ * 宽度多到能再放下一列时,auto-fill 自动增加每行数量,全程无需 JS 参与
+ */
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--emoji-size, 182px));
+  justify-content: space-evenly;
+  row-gap: 12px;
+}
+
 .emoji-pic {
   transition: all .5s;
   cursor: pointer;

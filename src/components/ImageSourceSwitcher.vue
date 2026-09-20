@@ -1,18 +1,28 @@
 <template>
   <n-space justify="start" align="center" :size="[3,10]">
-    <template v-for="source in imageSources">
-      <n-tag round checkable :checked="config['imageSource']===source['key']" size="medium"
-             @click="()=>switchImageSource(source['key'])" @click.middle="()=>openLink(source['host'])">
-        {{ source['label'] }}
-      </n-tag>
-    </template>
+    <n-tag v-for="source in effectiveSources" :key="source.id" round checkable size="medium"
+           :checked="isActive(source)"
+           @click="() => handleSwitch(source)"
+           @click.middle="() => openLink(source.host)">
+      {{ source.label }}
+    </n-tag>
   </n-space>
 </template>
 
 <script>
-import {fetchConfig, updateConfig} from "../js/useConfig.js";
+import {ref, watch} from "vue";
 import {useMessage} from "naive-ui";
-import {computed, ref} from "vue";
+import {effectiveSources, fetchConfig, switchSource} from "../composables/useConfig.js";
+import {openLink, whenPlatformReady} from "../platform/index.js";
+
+/** 当前图源已不可用时,自动切到第一个生效图源 */
+const ensureActiveSourceAvailable = (config, isActive, handleSwitch) => {
+  config.value = fetchConfig();
+  const list = effectiveSources.value;
+  if (!list.some(isActive) && list.length) {
+    handleSwitch(list[0]);
+  }
+};
 
 export default {
   name: "ImageSourceSwitcher",
@@ -21,108 +31,37 @@ export default {
     loading: {type: Boolean, default: false}
   },
   setup(props) {
-    const {reload} = props
-    const config = ref({})
-    config.value = fetchConfig()
+    const {reload} = props;
+    const message = useMessage();
+    const config = ref(fetchConfig());
 
-    const imageSources = computed(
-        () => [
-          {
-            label: '搜狗',
-            key: '搜狗',
-            disabled: config.value['imageSource'] === '搜狗',
-            host: 'https://pic.sogou.com/pic/emo/index.jsp'
-          },
-          {
-            label: '发表情',
-            key: '发表情',
-            disabled: config.value['imageSource'] === '发表情',
-            host: 'https://fabiaoqing.com'
-          },
-          {
-            label: '斗图啦',
-            key: '斗图啦',
-            disabled: config.value['imageSource'] === '斗图啦',
-            host: 'https://www.doutupk.com'
-          },
+    const isActive = (source) => config.value.sourceId === source.id;
 
-          {
-            label: '斗图吧',
-            key: '斗图吧',
-            disabled: config.value['imageSource'] === '斗图吧',
-            host: 'https://doutub.com'
-          },
-          // {
-          //   label: '斗图王',
-          //   key: '斗图王',
-          //   disabled: config.value['imageSource'] === '斗图王',
-          //   host: 'https://www.doutuwang.com'
-          // },
-          // {
-          //   label: '斗图',
-          //   key: '斗图',
-          //   disabled: config.value['imageSource'] === '去斗图',
-          //   host: 'https://doutu.lccyy.com/static/view.html'
-          // },
-          // {
-          //   label: '去斗图',
-          //   key: '去斗图',
-          //   disabled: config.value['imageSource'] === '去斗图',
-          //   host: 'http://www.godoutu.com'
-          // },
-          {
-            label: '爱斗图',
-            key: '爱斗图',
-            disabled: config.value['imageSource'] === '爱斗图',
-            host: 'http://www.adoutu.com'
-          },
-          // {
-          //   label: '逗比表情包',
-          //   key: '逗比表情包',
-          //   disabled: config.value['imageSource'] === '逗比表情包',
-          //   host: 'https://www.dbbqb.com'
-          // },
-          {
-            label: '百度',
-            key: '百度',
-            disabled: config.value['imageSource'] === '百度',
-            host: 'https://image.baidu.com'
-          },
-          {
-            label: '斗了个图',
-            key: '斗了个图',
-            disabled: config.value['imageSource'] === '斗了个图',
-            host: 'https://www.dogetu.com'
-          },
-        ]
-    )
-
-    const message = useMessage()
-
-    // 切换图源
-    const switchImageSource = (value) => {
-      // 图源没变，不做任何处理
-      if (config.value['imageSource'] === value) {
+    /** 切换图源并重新加载 */
+    const handleSwitch = (source) => {
+      // 图源没变,不做任何处理
+      if (isActive(source)) {
         return;
       }
-      config.value['imageSource'] = value
-      updateConfig(config.value)
-      message.success(`切换到图源-${value}`)
-      reload()
-    }
+      switchSource(source.id);
+      config.value = fetchConfig();
+      message.success(`切换到图源-${source.label}`);
+      reload();
+    };
 
-    const currentSource = imageSources.value.filter(s => s.key === config.value['imageSource'])
-    // 当前表情包源不可用，切换到第一个表情包源
-    if (!currentSource.length) {
-      switchImageSource(imageSources.value[0]['key'])
-    }
+    // 平台 API 就绪后重新读取配置(模拟器/开发模式下注入较晚,首屏可能拿到的是默认值),
+    // 并兜底处理:当前图源已被下架/关闭时,自动切到第一个生效图源
+    whenPlatformReady(() => ensureActiveSourceAvailable(config, isActive, handleSwitch));
+
+    // 「更多-图源」页的开关实时生效:当前图源被关闭则自动切换
+    watch(effectiveSources, () => ensureActiveSourceAvailable(config, isActive, handleSwitch));
 
     return {
-      config,
-      imageSources,
-      switchImageSource,
-      openLink: window.openLink
-    }
+      effectiveSources,
+      isActive,
+      handleSwitch,
+      openLink,
+    };
   }
 }
 </script>

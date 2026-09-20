@@ -1,5 +1,5 @@
-import {createApp} from 'vue'
-import './style.css'
+import { createApp } from 'vue'
+import './main.css'
 import App from './App.vue'
 import {
     create,
@@ -27,6 +27,10 @@ import {
     NForm,
     NFormItem,
     NPopover,
+    NDataTable,
+    NTabs,
+    NTabPane,
+    NSwitch,
 } from 'naive-ui'
 
 const naive = create({
@@ -55,6 +59,10 @@ const naive = create({
         NForm,
         NFormItem,
         NPopover,
+        NDataTable,
+        NTabs,
+        NTabPane,
+        NSwitch,
     ]
 })
 createApp(App).use(naive).mount('#app')

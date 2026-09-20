@@ -8,47 +8,53 @@
 </template>
 
 <script>
-import useImageStarList from "../js/useImageStarList.js";
+import useImageStarList from "../composables/useImageStarList.js";
 import {useMessage} from "naive-ui";
+import {copyImage, openLink, pasteFile} from "../platform/index.js";
+
+/** 区分单击/双击的判定间隔(毫秒),间隔内再次点击视为双击 */
+const CLICK_INTERVAL = 400;
+
+/** 右键删除的反悔窗口(毫秒),窗口内再次右键可取消删除 */
+const REMOVE_REVOKE_INTERVAL = 10000;
 
 export default {
   name: "ImageItem",
   props: {
     em: {
       type: Object,
-      default: {}
+      default: () => ({})
     },
     emoticons: {
       type: Array,
-      default: []
+      default: () => []
     }
   },
   setup() {
     const {switchCollectedStatus, starEmojiList} = useImageStarList()
 
-    //  检查表情包是否已存在
+    /** 检查表情包是否已收藏 */
     const checkIfExist = (checkImgSrc) => {
-      for (let icon of starEmojiList.value) {
-        if (checkImgSrc === icon.imgSrc) {
-          return true
-        }
-      }
-      return false
+      return starEmojiList.value.some(icon => checkImgSrc === icon.imgSrc)
     }
 
     const {success, warning, info} = useMessage()
-    // 删除任务的映射关系
+    // 待执行的删除任务(支持反悔)
     const removeTaskMap = {}
+
+    /**
+     * 右键收藏/取消收藏。
+     * 取消收藏有反悔窗口:窗口内再次右键可撤销删除。
+     */
     const saveOrRemove = (em) => {
-      // 表情包不存在，直接添加
+      // 未收藏,直接添加
       if (!checkIfExist(em.imgSrc)) {
         switchCollectedStatus(em)
         return
       }
 
-      // 表情包存在,进行取消
+      // 已收藏且处于删除等待期,再次右键取消删除
       const removeTask = removeTaskMap[em.imgSrc]
-      // 正在等待删除中，取消删除
       if (!!removeTask) {
         clearTimeout(removeTask)
         info("已取消删除")
@@ -56,37 +62,34 @@ export default {
         return
       }
 
-      warning("即将删除，10s内右键可以取消删除哦~", {duration: 3000})
-      removeTaskMap[em.imgSrc] = setTimeout(() => switchCollectedStatus(em), 10000)
+      warning(`即将删除，${REMOVE_REVOKE_INTERVAL / 1000}s内右键可以取消删除哦~`, {duration: 3000})
+      removeTaskMap[em.imgSrc] = setTimeout(() => switchCollectedStatus(em), REMOVE_REVOKE_INTERVAL)
     }
 
-    let timer = null
-    // 单击图片进行复制
+    let clickTimer = null
+
+    /** 单击复制图片到剪贴板(延时判定,与双击粘贴区分开) */
     const handleCopy = (em) => {
-      if (timer) {
-        clearTimeout(timer)
+      if (clickTimer) {
+        clearTimeout(clickTimer)
       }
-      // 设置延时器 超过300ms为单击 300ms内点击则为双击事件
-      timer = setTimeout(() => {
-        // 需要执行的逻辑代码 执行复制操作,400毫秒之内没有再次点击,就执行,如果400毫秒之内再次点击,则设定为粘贴操作...
-        window.copyImage(em, () => success('复制成功~'))
-      }, 400)
+      clickTimer = setTimeout(() => {
+        copyImage(em, () => success('复制成功~'))
+      }, CLICK_INTERVAL)
     }
 
-    // 双击图片进行复制和粘贴(这是一个动作,utools框架会先复制再进行粘贴,无法拆分)
+    /** 双击直接粘贴到当前光标所在输入框(平台会先复制再粘贴,无法拆分) */
     const handlePaste = (em) => {
-      if (timer) {
-        // 清除延时器
-        clearTimeout(timer)
+      if (clickTimer) {
+        clearTimeout(clickTimer)
       }
-      // 需要执行的逻辑代码,粘贴路径的时候,不能加 file:// 这个前缀...
-      utools.hideMainWindowPasteFile(em['fileSrc'].replace("file://", ""))
+      pasteFile(em['fileSrc'].replace("file://", ""))
     }
 
     return {
       saveOrRemove,
-      openLocal: (em) => window.openLink(em.fileSrc),
-      openRemote: (em) => window.openLink(em.imgSrc),
+      openLocal: (em) => openLink(em.fileSrc),
+      openRemote: (em) => openLink(em.imgSrc),
       handleCopy,
       handlePaste,
     }
