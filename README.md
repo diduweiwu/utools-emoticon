@@ -19,6 +19,21 @@ npm run lint       # ESLint 检查
 npm run format     # Prettier 格式化
 npm run test       # Vitest 单元测试
 npm run check:sources  # 本地一键图源检测(详见下文)
+npm run release minor  # 版本号 +1(详见下文「发版」)
+```
+
+### 发版
+
+版本号出现在 `package.json` 和插件清单 `public/plugin.json` 两处,用脚本一次性同步更新,
+并在 `CHANGELOG.md` 顶部插入对应版本的小节(发布内容自己补):
+
+```bash
+npm run release            # 默认 patch:1.0.0 -> 1.0.1
+npm run release minor      # 1.0.0 -> 1.1.0
+npm run release major      # 1.0.0 -> 2.0.0
+npm run release -- 1.2.3   # 直接指定版本号
+bash nier/shell/bump-version.sh patch --commit   # 更新后自动 git commit + 打 vX.Y.Z 标签
+bash nier/shell/bump-version.sh --dry-run        # 只预览,不改文件
 ```
 
 工程约定:

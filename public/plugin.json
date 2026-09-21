@@ -4,7 +4,7 @@
   "title": "斗图表情包",
   "description": "在线搜索表情包图片，助你高效斗图",
   "author": "被时间思牵",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "main": "index.html",
   "preload": "preload/services.js",
   "logo": "logo.png",
