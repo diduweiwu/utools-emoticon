@@ -1,36 +1,24 @@
-<script>
-import {darkTheme, useOsTheme} from "naive-ui";
-import {computed} from "vue";
-import Home from "./components/Home.vue";
+<script setup lang="ts">
+import { computed } from "vue";
+import { darkTheme, useOsTheme } from "naive-ui";
+
+import HomeView from "@/views/HomeView.vue";
 
 /**
  * 应用外壳:只负责主题与全局消息容器。
  * naive-ui 的 useMessage 只能在 <n-message-provider> 的【后代】组件的 setup 里调用,
- * 所以页面内容拆分到 Home.vue,避免在 provider 之上使用消息 API。
+ * 所以页面内容拆分到 HomeView.vue,避免在 provider 之上使用消息 API。
  */
-export default {
-  components: {Home},
-  setup() {
-    const osThemeRef = useOsTheme();
+const osTheme = useOsTheme();
 
-    /**
-     * js 文件下使用这个做类型提示
-     * @type import('naive-ui').GlobalThemeOverrides
-     */
-    const themeOverrides = {}
-
-    return {
-      theme: computed(() => osThemeRef.value === "dark" ? darkTheme : null),
-      themeOverrides,
-    }
-  }
-}
+/** 跟随系统明暗主题 */
+const theme = computed(() => (osTheme.value === "dark" ? darkTheme : null));
 </script>
 
 <template>
-  <n-config-provider :theme="theme" :theme-overrides="themeOverrides">
-    <n-message-provider placement="top" container-style="margin-top:40px" :duration="1500">
-      <Home/>
+  <n-config-provider :theme="theme">
+    <n-message-provider placement="top" container-style="margin-top: 40px" :duration="1500">
+      <HomeView />
     </n-message-provider>
   </n-config-provider>
 </template>

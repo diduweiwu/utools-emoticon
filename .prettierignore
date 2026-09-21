@@ -1,0 +1,6 @@
+dist
+node_modules
+public
+src/types/auto-imports.d.ts
+src/types/components.d.ts
+package-lock.json

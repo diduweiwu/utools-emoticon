@@ -1,68 +1,7 @@
-import { createApp } from 'vue'
-import './main.css'
-import App from './App.vue'
-import {
-    create,
-    NBackTop,
-    NButton,
-    NButtonGroup,
-    NConfigProvider,
-    NDrawer,
-    NDrawerContent,
-    NEmpty,
-    NTag,
-    NDivider,
-    NResult,
-    NCarousel,
-    NCarouselItem,
-    NList,
-    NListItem,
-    NLayout,
-    NLayoutHeader,
-    NMessageProvider,
-    NSpace,
-    NSpin,
-    NText,
-    NCheckbox,
-    NForm,
-    NFormItem,
-    NPopover,
-    NDataTable,
-    NTabs,
-    NTabPane,
-    NSwitch,
-} from 'naive-ui'
+import { createApp } from "vue";
 
-const naive = create({
-    components: [
-        NBackTop,
-        NButton,
-        NButtonGroup,
-        NConfigProvider,
-        NDrawer,
-        NDrawerContent,
-        NEmpty,
-        NTag,
-        NDivider,
-        NResult,
-        NCarousel,
-        NCarouselItem,
-        NList,
-        NListItem,
-        NLayout,
-        NLayoutHeader,
-        NMessageProvider,
-        NText,
-        NSpace,
-        NSpin,
-        NCheckbox,
-        NForm,
-        NFormItem,
-        NPopover,
-        NDataTable,
-        NTabs,
-        NTabPane,
-        NSwitch,
-    ]
-})
-createApp(App).use(naive).mount('#app')
+import App from "./App.vue";
+import "./styles/main.css";
+
+// naive-ui 组件由 unplugin-vue-components 按需自动注册,无需手动安装
+createApp(App).mount("#app");
