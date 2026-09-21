@@ -11,19 +11,12 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    About: typeof import('./../components/about/About.vue')['default']
     AboutPanel: typeof import('./../components/more/AboutPanel.vue')['default']
-    DonateDrawer: typeof import('./../components/DonateDrawer.vue')['default']
+    DonateDrawer: typeof import('./../components/donate/DonateDrawer.vue')['default']
     EmoticonItem: typeof import('./../components/emoticon/EmoticonItem.vue')['default']
     EmoticonList: typeof import('./../components/emoticon/EmoticonList.vue')['default']
     EmoticonViewer: typeof import('./../components/emoticon/EmoticonViewer.vue')['default']
-    Home: typeof import('./../components/Home.vue')['default']
-    ImageCarousel: typeof import('./../components/ImageCarousel.vue')['default']
-    ImageItem: typeof import('./../components/ImageItem.vue')['default']
-    ImageList: typeof import('./../components/ImageList.vue')['default']
-    ImageSourceSwitcher: typeof import('./../components/ImageSourceSwitcher.vue')['default']
-    ImageStarList: typeof import('./../components/ImageStarList.vue')['default']
-    MoreDrawer: typeof import('./../components/MoreDrawer.vue')['default']
+    MoreDrawer: typeof import('./../components/more/MoreDrawer.vue')['default']
     NBackTop: typeof import('naive-ui')['NBackTop']
     NButton: typeof import('naive-ui')['NButton']
     NCarousel: typeof import('naive-ui')['NCarousel']
@@ -46,9 +39,8 @@ declare module 'vue' {
     NTabs: typeof import('naive-ui')['NTabs']
     NTag: typeof import('naive-ui')['NTag']
     NText: typeof import('naive-ui')['NText']
-    Settings: typeof import('./../components/setting/Settings.vue')['default']
     SettingsPanel: typeof import('./../components/more/SettingsPanel.vue')['default']
-    SourceHealthCheck: typeof import('./../components/SourceHealthCheck.vue')['default']
+    SourceHealthCheck: typeof import('./../components/source/SourceHealthCheck.vue')['default']
     SourceSwitcher: typeof import('./../components/source/SourceSwitcher.vue')['default']
     StarDrawer: typeof import('./../components/star/StarDrawer.vue')['default']
   }

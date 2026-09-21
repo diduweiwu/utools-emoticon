@@ -1,4 +1,4 @@
-# 基于 Vue 3 + Vite 开发的ztools表情包搜索插件
+# 基于 Vue 3 + TypeScript + Vite 开发的 ztools 表情包搜索插件
 
 ```text
 API接口为自己搜索的，如果大家有推荐的表情包接口，欢迎推荐
@@ -7,41 +7,69 @@ API接口为自己搜索的，如果大家有推荐的表情包接口，欢迎�
 鸣谢logo作者：https://www.iconfinder.com/icons/7188639/happy_face_emoji_emotion_smile_smiley_emoticons_icon
 ```
 
+## 开发
+
+要求 Node.js `^20.19.0 || >=22.12.0`。
+
+```bash
+npm install        # 安装依赖
+npm run dev        # 本地开发(vite dev server,配合 ztools/uTools 开发模式)
+npm run build      # 类型检查 + 打包到 dist/
+npm run lint       # ESLint 检查
+npm run format     # Prettier 格式化
+npm run test       # Vitest 单元测试
+npm run check:sources  # 本地一键图源检测(详见下文)
+```
+
+工程约定:
+
+- **全量 TypeScript strict 模式**,业务代码与组件均为 `.ts` / `<script setup lang="ts">`;
+- **ESLint(flat config) + Prettier** 负责代码质量与格式,提交前跑 `npm run lint`;
+- `vue` API(`ref`/`computed` 等)由 `unplugin-auto-import` 自动导入,
+  naive-ui 组件由 `unplugin-vue-components` 按需自动注册,无需手动 import/安装;
+- 路径别名 `@` 指向 `src/`;
+- 单元测试文件与被测模块同目录,命名为 `*.spec.ts`;
+- 推送/PR 时 GitHub Actions 自动执行 lint → 类型检查 → 测试 → 构建。
+
 ## 目录结构
 
 ```text
 src/
-├── main.ts                     # 应用入口(注册 naive-ui 组件)
+├── main.ts                     # 应用入口(naive-ui 组件自动按需注册)
 ├── App.vue                     # 应用外壳:主题 + 全局消息容器(useMessage 只能在其后代使用)
-├── platform/
-│   └── index.js                # 平台桥接层:全项目唯一触碰平台 API 的地方,同一套代码适配 uTools/ztools
+├── styles/main.css             # 全局样式
+├── types/                      # 共享类型 + 自动生成声明(auto-imports.d.ts / components.d.ts)
+│   └── emoticon.ts             # Emoticon 业务类型
+├── platform/                   # 平台桥接层
+│   ├── index.ts                # 全项目唯一触碰平台 API 的地方,同一套代码适配 uTools/ztools
+│   └── window.d.ts             # preload 注入到 window 的能力声明
 ├── utils/
-│   └── http.js                 # 统一 axios 实例(默认超时/拦截器收口)
+│   └── http.ts                 # 统一 axios 实例(默认超时/拦截器收口)
 ├── sources/                    # 图源层(策略模式 + 注册表)
-│   ├── defineSource.js         # 图源契约(JSDoc 类型)与工厂函数
-│   ├── registry.js             # 图源注册表:调度/切换/检测的数据源,新增图源只改这里
-│   ├── healthCheck.js          # 图源检测纯逻辑(插件内与 CLI 共用)
-│   ├── sogou.js 等             # 已上架图源,一个文件一个图源
+│   ├── types.ts                # 图源契约(ImageSource / SourceFetch*)
+│   ├── defineSource.ts         # 图源工厂函数(统一标准写法)
+│   ├── registry.ts             # 图源注册表:调度/切换/检测的数据源,新增图源只改这里
+│   ├── health-check.ts         # 图源检测纯逻辑(插件内与 CLI 共用)
+│   ├── sogou.ts 等             # 已上架图源,一个文件一个图源
 │   └── offline/                # 已下架/未上架图源(enabled:false,参与检测,复活可一键上架)
 ├── composables/                # Vue 组合式函数(响应式层)
-│   ├── useEmoticons.js         # 核心调度器:状态机 + 图源调度 + 下载编排 + 分页
-│   ├── useConfig.js            # 配置读写(自动迁移老版本中文 label 配置)
-│   ├── useDownload.js          # 图片批量下载(分批回调/顺序一致性)
-│   ├── useImageStarList.js     # 收藏夹
-│   ├── useSettings.js          # 常用设置
-│   ├── useStorage.js           # dbStorage JSON 封装
-│   └── useSourceHealthCheck.js # 图源检测的响应式封装
-└── components/                 # UI 组件
-    ├── Home.vue                # 主页面:顶栏 + 表情包列表(渲染在消息容器内)
-    ├── ImageSourceSwitcher.vue # 图源切换(列表来自注册表,自动更新)
-    ├── MoreDrawer.vue          # 「更多」聚合入口:图源 / 设置 / 关于 三个 Tab
-    ├── SourceHealthCheck.vue   # 图源面板(图源开关 + 手动「图源检测」按钮)
-    ├── ImageList.vue / ImageItem.vue / ImageCarousel.vue
-    ├── ImageStarList.vue
-    ├── about/About.vue         # 关于(图源清单从注册表生成)
-    └── setting/Settings.vue    # 设置
+│   ├── use-emoticons.ts        # 核心调度器:状态机 + 图源调度 + 下载编排 + 分页
+│   ├── use-config.ts           # 配置读写(自动迁移老版本中文 label 配置)
+│   ├── use-download.ts         # 图片批量下载(分批回调/顺序一致性)
+│   ├── use-star-list.ts        # 收藏夹
+│   ├── use-settings.ts         # 常用设置
+│   ├── use-storage.ts          # dbStorage JSON 封装
+│   └── use-source-health-check.ts # 图源检测的响应式封装
+├── views/
+│   └── HomeView.vue            # 主页面:顶栏 + 表情包列表(渲染在消息容器内)
+└── components/                 # UI 组件(按领域分目录)
+    ├── emoticon/               # 表情展示:EmoticonList 网格 / EmoticonItem 单项 / EmoticonViewer 大图预览
+    ├── source/                 # 图源:SourceSwitcher 切换 / SourceHealthCheck 检测面板
+    ├── star/                   # 收藏夹抽屉
+    ├── more/                   # 「更多」聚合入口:MoreDrawer / SettingsPanel / AboutPanel
+    └── donate/                 # 赞助抽屉
 
-scripts/check-sources.mjs       # 本地 CLI 一键图源检测
+scripts/check-sources.ts        # 本地 CLI 一键图源检测(经 tsx 运行,与插件共享同一套源码)
 public/                         # 插件清单 plugin.json / preload / logo
 ```
 
@@ -49,7 +77,7 @@ public/                         # 插件清单 plugin.json / preload / logo
 
 同一套代码同时适配 **uTools** 与 **ztools**：
 
-- 平台 API 在 `src/platform/index.js` 统一识别(`utools` / `ztools` 全局),preload 同样做了双平台兼容;
+- 平台 API 在 `src/platform/index.ts` 统一识别(`utools` / `ztools` 全局),preload 同样做了双平台兼容;
 - `public/plugin.json` 同时包含两个平台的清单字段(pluginName / name、title 等),关键字两边通用;
 - 收藏目录沿用各自平台的历史命名(uTools: `collectedEmoticons`,ztools: `ztoolsCollectedEmoticons`),老用户收藏不受影响。
 
@@ -72,16 +100,30 @@ npm run check:sources            # 带指定关键字: npm run check:sources -- 
 
 ## 如何新增一个图源
 
-1. 在 `src/sources/` 下新建 `<id>.js`，照抄任意现有图源，用 `defineSource({...})` 声明:
+1. 在 `src/sources/` 下新建 `<id>.ts`，照抄任意现有图源，用 `defineSource({...})` 声明:
    - 必填: `id`(英文唯一标识)、`label`(展示名)、`host`(官网)、`fetchPage({keyword, page, pageSize})`
    - `fetchPage` 只负责「请求 + 解析」，返回 `{links, downloadOptions?, hasMore?, hasLess?}`，不要下载图片
-   - 选填: `timeout`(慢图源放宽)、`requiresKeyword`/`probeKeyword`(必须有关键字的图源)、`defaultKeyword`(空关键字兜底)、`note`(备注)
-2. 在 `src/sources/registry.js` 的数组里注册一行
+   - 选填: `timeout`(慢图源放宽)、`defaultKeyword`(空关键字兜底)、`note`(备注)
+2. 在 `src/sources/registry.ts` 的数组里注册一行
 
 切换器、关于页、一键检测会自动感知新图源，其他代码零改动(开闭原则)。
 某图源站点复活时，把 `offline/` 里对应图源的 `enabled: false` 删掉即可重新上架。
 
 ## 更新日志
+
+- 2026-09-21
+
+```text
+1.工程现代化:升级 Vite 8 / TypeScript 5.9 / vue-tsc 3 / ESLint 10,开启 TS strict 全量检查
+2.逻辑层(composables/sources/platform/utils)由 .js + JSDoc 全面迁移为 .ts,图源接口响应补充类型
+3.所有组件迁移为 <script setup lang="ts">;naive-ui 组件改由 unplugin-vue-components 按需自动注册
+4.vue API 由 unplugin-auto-import 自动导入;新增 @ 路径别名
+5.新增 ESLint(flat config) + Prettier + EditorConfig + Vitest 单元测试 + GitHub Actions CI
+6.目录按领域重组:页面拆到 views/,组件按 emoticon/source/star/more/donate 分目录并更名
+7.修复关于页收款码图片使用 /src 绝对路径导致打包后 404 的问题
+8.check:sources 脚本迁移为 TypeScript(经 tsx 运行),与插件共享同一套类型化源码
+9.收藏列表 computed 移除副作用,缺失文件补下载统一收敛到收藏夹打开/收藏动作
+```
 
 - 2026-09-19
 
