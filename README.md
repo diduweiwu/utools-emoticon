@@ -7,6 +7,16 @@ API接口为自己搜索的，如果大家有推荐的表情包接口，欢迎�
 鸣谢logo作者：https://www.iconfinder.com/icons/7188639/happy_face_emoji_emotion_smile_smiley_emoticons_icon
 ```
 
+## 预览
+
+回车搜索,多图源一键切换;左击复制图片,中击查看大图,右击加入收藏:
+
+![搜索界面](assets/screenshot-search.png)
+
+| ⭐ 收藏夹 | ⚙️ 更多(图源检测 / 设置 / 关于) |
+|:---:|:---:|
+| ![收藏夹](assets/screenshot-favorite.png) | ![图源管理](assets/screenshot-settings.png) |
+
 ## 开发
 
 要求 Node.js `^20.19.0 || >=22.12.0`。
@@ -86,6 +96,7 @@ src/
 
 scripts/check-sources.ts        # 本地 CLI 一键图源检测(经 tsx 运行,与插件共享同一套源码)
 public/                         # 插件清单 plugin.json / preload / logo
+assets/                         # README 展示用的截图
 ```
 
 ## 平台支持

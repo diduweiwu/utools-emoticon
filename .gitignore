@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# 构建产物(TypeScript 增量编译缓存)
+*.tsbuildinfo
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

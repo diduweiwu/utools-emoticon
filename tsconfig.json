@@ -29,8 +29,8 @@
       "@/*": ["src/*"]
     },
 
-    /* 平台 API 全局类型(utools/ztools) */
-    "types": ["@ztools-center/ztools-api-types"]
+    /* 全局类型:平台 API(utools/ztools)+ node 内置模块(*.spec.ts 里用了 node:http 等) */
+    "types": ["node", "@ztools-center/ztools-api-types"]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"]
 }

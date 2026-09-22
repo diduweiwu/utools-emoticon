@@ -1,4 +1,4 @@
-import { load } from "cheerio";
+import { load } from "cheerio/slim";
 import { defineSource } from "./defineSource";
 import { get } from "@/utils/http";
 
